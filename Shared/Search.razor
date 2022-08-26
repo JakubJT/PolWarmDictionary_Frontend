@@ -1,0 +1,112 @@
+@using Frontend.Models
+@using System.Net.Http
+@inject HttpClient Http
+@inject IConfiguration Configuration
+
+<div>
+    <p>
+        <button type="button" class="btn btn-primary" @onclick="ChangeLanguage">Zmień język</button>
+        @if (PolishToWarmianTranslation)
+        {
+            <span> Polski <span class="oi oi-arrow-right" aria-hidden="true"></span> Warmiński</span>
+        }
+        else
+        {
+            <span> Warmiński <span class="oi oi-arrow-right" aria-hidden="true"></span> Polski</span>
+        }
+    </p>
+</div>
+
+<div>
+    @if (IsRadzenBlazorStyle)
+    {
+        <form @onsubmit="OnSubmit">
+            <p>
+                <RadzenTextBox Placeholder="Szukaj..." @bind-Value="TextValue" Class="w-100" MaxLength=15 />
+            </p>
+            @if (Result != null)
+            {
+                <p>
+                    <RadzenDataGrid TItem="Word" Data="@Result">
+                        <Columns>
+                            @if (PolishToWarmianTranslation)
+                            {
+                                <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="Polski" />
+                                <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="Warmiński" />
+                            }
+                            else
+                            {
+                                <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="Warmiński" />
+                                <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="Polski" />
+                            }
+                        </Columns>
+                    </RadzenDataGrid>
+                </p>
+            }
+        </form>
+    }
+    else
+    {
+        <form @onsubmit="OnSubmit">
+            <MudTextField @bind-Value="TextValue" Label="Szukaj" Variant="Variant.Outlined" MaxLength=15
+            Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" OnAdornmentClick="OnSubmit">
+            </MudTextField>
+            @if (Result != null)
+            {
+                <p>
+                    <MudTable Items="@Result" Hover="true">
+                        <HeaderContent>
+                            <MudTh>@(PolishToWarmianTranslation ? "Polski" : "Warmiński")</MudTh>
+                            <MudTh>@(PolishToWarmianTranslation ? "Warmiński" : "Polski")</MudTh>
+                        </HeaderContent>
+                        <RowTemplate>
+                            <MudTd DataLabel=@(PolishToWarmianTranslation ? "Polish" : "Warmian")>@(PolishToWarmianTranslation ?
+                        @context.InPolish : @context.InWarmian)</MudTd>
+                            <MudTd DataLabel=@(PolishToWarmianTranslation ? "Warmian" : "Polish")>@(PolishToWarmianTranslation ?
+                        @context.InWarmian : @context.InPolish)</MudTd>
+                        </RowTemplate>
+                    </MudTable>
+                </p>
+            }
+        </form>
+    }
+    @if (GetError != null)
+    {
+        <p>@GetError</p>
+    }
+</div>
+
+
+@code {
+    [Parameter, EditorRequired]
+    public bool IsRadzenBlazorStyle { get; set; }
+    private string TextValue { get; set; }
+    private bool PolishToWarmianTranslation { get; set; } = true;
+    private List<Word>? Result { get; set; }
+    private string? GetError { get; set; }
+
+    public void ChangeLanguage() => PolishToWarmianTranslation = !PolishToWarmianTranslation;
+
+    public async Task OnSubmit()
+    {
+        GetError = null;
+        Result = null;
+
+        string request = $"/getword?word={TextValue}&translateFromPolish={PolishToWarmianTranslation}";
+        var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            GetError = $"Brak słowa \"{TextValue}\" w bazie danych";
+            return;
+        }
+        else if (!response.IsSuccessStatusCode)
+        {
+            GetError = $"{response.StatusCode}";
+            return;
+        }
+
+        var reponseData = await response.Content.ReadFromJsonAsync<Word>();
+        Result = new();
+        Result.Add(reponseData);
+    }
+}

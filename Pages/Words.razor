@@ -1,0 +1,46 @@
+@page "/words"
+@using System.Net.Http
+@using Frontend.Models
+@inject HttpClient Http
+@inject IConfiguration Configuration
+
+<PageTitle>Wszystkie słówka</PageTitle>
+
+<h1>Wszystkie słówka ze słownika</h1>
+<div>
+    @if (words == null)
+    {
+        <p><em>Wczytywanie...</em></p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Po polsku</th>
+                    <th>Po warmińsku</th>
+                    <th>Część mowy</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var word in words)
+                {
+                    <tr>
+                        <td>@word.InPolish</td>
+                        <td>@word.InWarmian</td>
+                        <td>@word.PartOfSpeech</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>
+
+
+@code {
+    private Word[]? words;
+
+    protected override async Task OnInitializedAsync() => words = await
+    Http.GetFromJsonAsync<Word[]>(Configuration["serviceEndpoint"] + "/GetAllWords");
+
+}
