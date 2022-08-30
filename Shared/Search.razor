@@ -80,7 +80,7 @@
 @code {
     [Parameter, EditorRequired]
     public bool IsRadzenBlazorStyle { get; set; }
-    private string TextValue { get; set; }
+    private string? TextValue { get; set; }
     private bool PolishToWarmianTranslation { get; set; } = true;
     private List<Word>? Result { get; set; }
     private string? GetError { get; set; }

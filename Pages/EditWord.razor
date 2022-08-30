@@ -1,0 +1,72 @@
+@page "/editword/{word}"
+@using System.Net.Http
+@using Models
+@inject HttpClient Http
+@inject IConfiguration Configuration
+
+<div>
+    @if (GetError != null)
+    {
+        <p>@GetError</p>
+    }
+    <EditForm Model="@WordToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <p>
+            <label>
+                Po polsku:
+                <InputText class="form-control" @bind-Value="WordToSubmit.InPolish" />
+            </label>
+        </p>
+        <p>
+            <label>
+                Po warmińsku
+                <InputText class="form-control" @bind-Value="WordToSubmit.InWarmian" />
+            </label>
+        </p>
+        <p>
+            <label>
+                Część mowy
+                <InputSelect @bind-Value="WordToSubmit.PartOfSpeech" class="form-select">
+                    <option>Rzeczownik</option>
+                    <option>Czasownik</option>
+                    <option>Przymiotnik</option>
+                    <option>Przysłówek</option>
+                    <option>Liczebnik</option>
+                    <option>Zaimek</option>
+                    <option>Inna</option>
+                </InputSelect>
+            </label>
+        </p>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter]
+    public string? Word { get; set; }
+    private Word? WordToSubmit { get; set; } = new();
+    private string GetError { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+        string request = $"/getword?word={Word}&translateFromPolish=true";
+        var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
+        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+            GetError = $"Brak słowa \"{Word}\" w bazie danych";
+            return;
+        }
+        else if (!response.IsSuccessStatusCode)
+        {
+            GetError = $"{response.StatusCode}";
+            return;
+        }
+        WordToSubmit = await response.Content.ReadFromJsonAsync<Word>();
+    }
+    public async void OnSubmit()
+    {
+        string request = $"/editword";
+        var response = await Http.PostAsJsonAsync<Word>(Configuration["serviceEndpoint"] + request, WordToSubmit);
+    }
+}
