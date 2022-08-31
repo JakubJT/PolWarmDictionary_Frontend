@@ -3,6 +3,8 @@
 @using Frontend.Models
 @inject HttpClient Http
 @inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 
 <PageTitle>Wszystkie słówka</PageTitle>
 
@@ -21,6 +23,7 @@
                     <th>Po warmińsku</th>
                     <th>Część mowy</th>
                     <th></th>
+                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -30,19 +33,57 @@
                         <td>@word.InPolish</td>
                         <td>@word.InWarmian</td>
                         <td>@word.PartOfSpeech</td>
-                        <td><a href="/EditWord/@word.InPolish">Edytuj</a></td>
+                        <td>
+                            <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
+                        NavigationManager.NavigateTo($"/EditWord/{word.InPolish}"))>Edytuj</button>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-danger btn-sm" @onclick=@(() =>
+                        DeleteClick(word)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button>
+                        </td>
                     </tr>
                 }
             </tbody>
         </table>
     }
+    <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
+        NavigationManager.NavigateTo($"/CreateWord"))>Dodaj nowe słowo</button>
+</div>
+
+<div class="modal fade" id="deleteWordModal" tabindex="-1" aria-labelledby="deleteWordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteWordModalLabel">Usuwanie słowa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Na pewno chcesz usunąć słowo <em>@wordToDelete?.InPolish</em>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="DeleteWord">Tak</button>
+            </div>
+        </div>
+    </div>
 </div>
 
 
 @code {
     private Word[]? words;
+    private Word? wordToDelete;
 
     protected override async Task OnInitializedAsync() => words = await
     Http.GetFromJsonAsync<Word[]>(Configuration["serviceEndpoint"] + "/GetAllWords");
 
+    public async Task DeleteClick(Word word)
+    {
+        @* await JS.InvokeVoidAsync("myModalBootstrap"); *@
+        wordToDelete = word;
+    }
+    public async Task DeleteWord()
+    {
+        await Http.DeleteAsync(Configuration["serviceEndpoint"] + $"/DeleteWord?wordId={wordToDelete.Id}");
+        words = await Http.GetFromJsonAsync<Word[]>(Configuration["serviceEndpoint"] + "/GetAllWords");
+    }
 }
