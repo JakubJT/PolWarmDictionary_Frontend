@@ -70,10 +70,6 @@
             }
         </form>
     }
-    @if (GetError != null)
-    {
-        @GetError
-    }
     @if (ErrorHandleMessage != null)
     {
         @ErrorHandleMessage
@@ -89,14 +85,12 @@
     private string? TextValue { get; set; }
     private bool PolishToWarmianTranslation { get; set; } = true;
     private List<Word>? Result { get; set; }
-    private string? GetError { get; set; }
     private RenderFragment? ErrorHandleMessage { get; set; }
 
     public void ChangeLanguage() => PolishToWarmianTranslation = !PolishToWarmianTranslation;
 
     public async Task OnSubmit()
     {
-        GetError = null;
         Result = null;
         ErrorHandleMessage = null;
 
@@ -106,12 +100,24 @@
             var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
-                GetError = $"Brak słowa \"{TextValue}\" w bazie danych";
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-secondary" role="alert">
+                        Brak słowa "@TextValue" w bazie danych
+                    </div>
+
+                };
                 return;
             }
             else if (!response.IsSuccessStatusCode)
             {
-                GetError = $"{response.StatusCode}"; //alert też
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Wyszukanie słowa się nie powiodło - <em>@response.StatusCode</em>
+                    </div>
+
+                };
                 return;
             }
 

@@ -1,4 +1,3 @@
-@page "/createword"
 @using System.Net.Http
 @using Models
 @inject HttpClient Http
@@ -41,38 +40,8 @@
         <button type="submit" class="btn btn-primary">Zapisz</button>
     </EditForm>
 </div>
-@if (ErrorHandleMessage != null)
-{
-    @ErrorHandleMessage
-}
 
 @code {
-    [CascadingParameter]
-    public Error? Error { get; set; }
     private Word? WordToSubmit { get; set; } = new();
-    private RenderFragment? ErrorHandleMessage { get; set; }
-    public async Task OnSubmit()
-    {
-        string request = $"/createword";
-        try
-        {
-            var response = await Http.PostAsJsonAsync<Word>(Configuration["serviceEndpoint"] + request, WordToSubmit);
-            if (!response.IsSuccessStatusCode)
-            {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        <p>Stworzenie słowa się nie powiodło - <em>@response.StatusCode</em></p>
-                    </div>
-                };
-                @* StateHasChanged(); *@
-                return;
-            }
-            NavigationManager.NavigateTo("words", true);
-        }
-        catch (Exception ex)
-        {
-            ErrorHandleMessage = Error?.HandleError(ex);
-        }
-    }
+    public void OnSubmit() { }
 }

@@ -84,15 +84,30 @@
     protected override async Task OnInitializedAsync()
     {
         try
-        {
-            words = await
-            Http.GetFromJsonAsync<Word[]>(Configuration["serviceEndpoint"] + "/GetAllWords");
+        {            
+            await GetAllWords();
         }
         catch (Exception ex)
         {
             ErrorHandleMessage = Error?.HandleError(ex);
         }
     }
+
+    private async Task GetAllWords()
+    {        
+            var response = await Http.GetAsync(Configuration["serviceEndpoint"] + "/GetAllWords");
+            if (!response.IsSuccessStatusCode)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Wyświetlenie słów się nie powiodło - <em>{response.StatusCode}</em>
+                    </div>
+                };
+                return;
+            }
+            words = await response.Content.ReadFromJsonAsync<Word[]>();
+    } 
 
     public async Task DeleteClick(Word word)
     {
@@ -101,7 +116,33 @@
     }
     public async Task DeleteWord()
     {
-        await Http.DeleteAsync(Configuration["serviceEndpoint"] + $"/DeleteWord?wordId={wordToDelete.Id}");
-        words = await Http.GetFromJsonAsync<Word[]>(Configuration["serviceEndpoint"] + "/GetAllWords");
+        try
+        {
+            var deleteResponse = await Http.DeleteAsync(Configuration["serviceEndpoint"] + $"/DeleteWord?wordId={wordToDelete.Id}");
+            if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Nie znaleziono słowa "@wordToDelete.InPolish" w bazie danych
+                    </div>
+                };  
+            }
+            else if (!deleteResponse.IsSuccessStatusCode)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Usunięcie słowa się nie powiodło - <em>{response.StatusCode}</em>
+                    </div>
+                };
+                return;
+            }
+            await GetAllWords();
+        }
+        catch(Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
     }
 }

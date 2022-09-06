@@ -10,12 +10,12 @@ public class Word
     private const string ValidationMessageOnlyLetters = "Teskt powinnien zaczynać się z wielkiej litery i zawierać tylko litery";
 
     [Required]
-    [StringLength(16, ErrorMessage = ValidationMessageWarmian)]
+    [StringLength(16, MinimumLength = 2, ErrorMessage = ValidationMessageWarmian)]
     [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
     public string? InWarmian { get; set; }
 
     [Required]
-    [StringLength(16, ErrorMessage = ValidationMessagePolish)]
+    [StringLength(16, MinimumLength = 2, ErrorMessage = ValidationMessagePolish)]
     [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
     public string? InPolish { get; set; }
 

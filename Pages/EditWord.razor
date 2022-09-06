@@ -6,10 +6,6 @@
 @inject NavigationManager NavigationManager
 
 <div>
-    @if (GetError != null)
-    {
-        <p>@GetError</p>
-    }
     <EditForm Model="@WordToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
         <DataAnnotationsValidator />
         <p>
@@ -44,33 +40,83 @@
         <button type="submit" class="btn btn-primary">Zapisz</button>
     </EditForm>
 </div>
+@if (ErrorHandleMessage != null)
+{
+    <p>@ErrorHandleMessage</p>
+}
 
 @code {
+    [CascadingParameter]
+    public Error? Error { get; set; }
     [Parameter]
     public string? Word { get; set; }
     private Word? WordToSubmit { get; set; } = new();
-    private string GetError { get; set; }
+    private RenderFragment? ErrorHandleMessage { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
         string request = $"/getword?word={Word}&translateFromPolish=true";
-        var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
-        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        try
         {
-            GetError = $"Brak słowa \"{Word}\" w bazie danych";
-            return;
+            var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <p>Nie znaleziono słowa "@Word" w bazie danych</p>
+                    </div>
+                };
+                return;
+            }
+            else if (!response.IsSuccessStatusCode)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <p>Pobranie słowa się nie powiodło - <em>@response.StatusCode</em> </p>
+                    </div>
+                };
+                return;
+            }
+            WordToSubmit = await response.Content.ReadFromJsonAsync<Word>();
         }
-        else if (!response.IsSuccessStatusCode)
+        catch (Exception ex)
         {
-            GetError = $"{response.StatusCode}";
-            return;
+            ErrorHandleMessage = Error?.HandleError(ex);
         }
-        WordToSubmit = await response.Content.ReadFromJsonAsync<Word>();
     }
-    public async void OnSubmit()
+    public async Task OnSubmit()
     {
         string request = $"/editword";
-        var response = await Http.PostAsJsonAsync<Word>(Configuration["serviceEndpoint"] + request, WordToSubmit);
-        NavigationManager.NavigateTo("words", true);
+        try
+        {
+            var response = await Http.PostAsJsonAsync<Word>(Configuration["serviceEndpoint"] + request, WordToSubmit);
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <p>Nie znaleziono słowa "@Word" w bazie danych</p>
+                    </div>
+                };
+                return;
+            }
+            else if (!response.IsSuccessStatusCode)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <p>Edycja słowa się nie powiodła - <em>@response.StatusCode</em></p>
+                    </div>
+                };
+                return;
+            }
+            NavigationManager.NavigateTo("words", true);
+        }
+        catch (Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
     }
 }
