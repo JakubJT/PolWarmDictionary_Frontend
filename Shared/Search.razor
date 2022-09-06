@@ -72,18 +72,25 @@
     }
     @if (GetError != null)
     {
-        <p>@GetError</p>
+        @GetError
+    }
+    @if (ErrorHandleMessage != null)
+    {
+        @ErrorHandleMessage
     }
 </div>
 
 
 @code {
+    [CascadingParameter]
+    public Error? Error { get; set; }
     [Parameter, EditorRequired]
     public bool IsRadzenBlazorStyle { get; set; }
     private string? TextValue { get; set; }
     private bool PolishToWarmianTranslation { get; set; } = true;
     private List<Word>? Result { get; set; }
     private string? GetError { get; set; }
+    private RenderFragment? ErrorHandleMessage { get; set; }
 
     public void ChangeLanguage() => PolishToWarmianTranslation = !PolishToWarmianTranslation;
 
@@ -91,22 +98,30 @@
     {
         GetError = null;
         Result = null;
+        ErrorHandleMessage = null;
 
-        string request = $"/getword?word={TextValue}&translateFromPolish={PolishToWarmianTranslation}";
-        var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
-        if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+        try
         {
-            GetError = $"Brak słowa \"{TextValue}\" w bazie danych";
-            return;
-        }
-        else if (!response.IsSuccessStatusCode)
-        {
-            GetError = $"{response.StatusCode}";
-            return;
-        }
+            string request = $"/getword?word={TextValue}&translateFromPolish={PolishToWarmianTranslation}";
+            var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+            {
+                GetError = $"Brak słowa \"{TextValue}\" w bazie danych";
+                return;
+            }
+            else if (!response.IsSuccessStatusCode)
+            {
+                GetError = $"{response.StatusCode}"; //alert też
+                return;
+            }
 
-        var reponseData = await response.Content.ReadFromJsonAsync<Word>();
-        Result = new();
-        Result.Add(reponseData);
+            var reponseData = await response.Content.ReadFromJsonAsync<Word>();
+            Result = new();
+            Result.Add(reponseData);
+        }
+        catch (Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
     }
 }

@@ -1,0 +1,24 @@
+@using Microsoft.Extensions.Logging
+@inject ILogger<Error> Logger
+
+<CascadingValue Value="this">
+    @ChildContent
+</CascadingValue>
+
+@code {
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+    private const string ErrorMessage = "Coś poszło nie tak: ";
+    public RenderFragment HandleError(Exception ex)
+    {
+        Logger.LogError(ex, "Error");
+        ChildContent = __builder =>
+        {
+            <div class="alert alert-danger" role="alert">
+                <p>@ErrorMessage @ex.GetType()</p>
+            </div>
+
+        };
+        return ChildContent;
+    }
+}

@@ -8,18 +8,19 @@
 <div>
     <EditForm Model="@WordToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
         <DataAnnotationsValidator />
-        <ValidationSummary />
         <p>
             <label>
                 Po polsku:
-                <InputText class="form-control" @bind-Value="WordToSubmit.InPolish" />
+                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit.InPolish" />
             </label>
+            <ValidationMessage For="() => WordToSubmit.InPolish" />
         </p>
         <p>
             <label>
                 Po warmińsku
-                <InputText class="form-control" @bind-Value="WordToSubmit.InWarmian" />
+                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit.InWarmian" />
             </label>
+            <ValidationMessage For="() => WordToSubmit.InWarmian" />
         </p>
         <p>
             <label>
@@ -35,6 +36,7 @@
                     <option>Inna</option>
                 </InputSelect>
             </label>
+            <ValidationMessage For="() => WordToSubmit.PartOfSpeech" />
         </p>
         <button type="submit" class="btn btn-primary">Zapisz</button>
     </EditForm>
