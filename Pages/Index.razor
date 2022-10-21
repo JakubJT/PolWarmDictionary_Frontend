@@ -1,4 +1,5 @@
 ﻿@page "/"
+@inject ISessionStorageService SessionStorageServices
 
 <PageTitle>Strona Główna</PageTitle>
 <h1>Witajcie w słowniku warmińsko-polskim/polsko-warmińskim!</h1>
@@ -14,6 +15,17 @@
 
 @code {
     private bool IsRadzenBlazorStyle { get; set; } = true;
-    public void ChangeSearchBarStyle() => IsRadzenBlazorStyle = !IsRadzenBlazorStyle;
+    protected override void OnInitialized()
+    {
+        if (SessionStorageServices.GetItem<bool?>("isRadzenBlazorStyle") == false)
+        {
+            IsRadzenBlazorStyle = false;
+        };
+    }
+    public void ChangeSearchBarStyle()
+    {
+        IsRadzenBlazorStyle = !IsRadzenBlazorStyle;
+        SessionStorageServices.SetItem("isRadzenBlazorStyle", IsRadzenBlazorStyle);
+    }
 
 }

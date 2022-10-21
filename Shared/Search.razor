@@ -2,6 +2,7 @@
 @using System.Net.Http
 @inject HttpClient Http
 @inject IConfiguration Configuration
+@inject ISessionStorageService SessionStorageServices
 
 <div>
     <p>
@@ -87,7 +88,42 @@
     private List<Word>? Result { get; set; }
     private RenderFragment? ErrorHandleMessage { get; set; }
 
-    public void ChangeLanguage() => PolishToWarmianTranslation = !PolishToWarmianTranslation;
+    public void ChangeLanguage()
+    {
+        PolishToWarmianTranslation = !PolishToWarmianTranslation;
+        SessionStorageServices.SetItem("polishToWarmianTranslation", PolishToWarmianTranslation);
+    }
+
+    protected override void OnInitialized()
+    {
+        LoadValuesFromStorage();
+    }
+
+    private void LoadValuesFromStorage()
+    {
+        if (SessionStorageServices.GetItem<bool?>("polishToWarmianTranslation") == false)
+        {
+            PolishToWarmianTranslation = false;
+        };
+
+        if (SessionStorageServices.GetItem<string?>("word") == null) return;
+
+        TextValue = SessionStorageServices.GetItem<string?>("word");
+        if (SessionStorageServices.GetItem<List<Word>?>("result") == null)
+        {
+            ErrorHandleMessage = __builder =>
+            {
+                <div class="alert alert-secondary" role="alert">
+                    Brak słowa "@TextValue" w bazie danych
+                </div>
+
+            };
+        }
+        else
+        {
+            Result = SessionStorageServices.GetItem<List<Word>?>("result");
+        }
+    }
 
     public async Task OnSubmit()
     {
@@ -107,6 +143,8 @@
                     </div>
 
                 };
+                SessionStorageServices.SetItem("result", Result);
+                SessionStorageServices.SetItem("word", TextValue);
                 return;
             }
             else if (!response.IsSuccessStatusCode)
@@ -124,6 +162,9 @@
             var reponseData = await response.Content.ReadFromJsonAsync<Word>();
             Result = new();
             Result.Add(reponseData);
+
+            SessionStorageServices.SetItem("result", Result);
+            SessionStorageServices.SetItem("word", TextValue);
         }
         catch (Exception ex)
         {
