@@ -1,6 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace Frontend.Models;
+namespace PolWarmDictionary_Frontend.Models;
 public class Word
 {
     public int Id { get; set; }
@@ -11,12 +11,12 @@ public class Word
 
     [Required]
     [StringLength(16, MinimumLength = 2, ErrorMessage = ValidationMessageWarmian)]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
+    [RegularExpression(@"^[A-ZĄĘÓŃŻŹĆ]+[a-ząężźćóńA-ZĄĘÓŃŻŹĆ\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
     public string? InWarmian { get; set; }
 
     [Required]
     [StringLength(16, MinimumLength = 2, ErrorMessage = ValidationMessagePolish)]
-    [RegularExpression(@"^[A-Z]+[a-zA-Z\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
+    [RegularExpression(@"^[A-ZĄĘÓŃŻŹĆ]+[a-ząężźćóńA-ZĄĘÓŃŻŹĆ\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
     public string? InPolish { get; set; }
 
     [Required]

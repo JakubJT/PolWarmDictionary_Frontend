@@ -1,0 +1,18 @@
+table {
+    width: auto;
+    vertical-align: unset;
+}
+
+.header-button {
+    padding: .05rem;
+    font-weight: bold;
+    border: none;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+nav {
+    padding-bottom: 1rem;
+}
