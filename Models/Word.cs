@@ -8,6 +8,7 @@ public class Word
     private const string ValidationMessageWarmian = "Pole \"Po warmińsku\" powinno zawierać od 1 do 16 liter";
     private const string ValidationMessagePolish = "Pole \"Po polsku\" powinno zawierać od 1 do 16 liter";
     private const string ValidationMessageOnlyLetters = "Teskt powinnien zaczynać się z wielkiej litery i zawierać tylko litery";
+    private const string ValidationMessagePartOfSpeech = "Pole \"Część mowy\" jest wymagane";
 
     [Required]
     [StringLength(16, MinimumLength = 2, ErrorMessage = ValidationMessageWarmian)]
@@ -19,6 +20,7 @@ public class Word
     [RegularExpression(@"^[A-ZĄĘÓŃŻŹĆ]+[a-ząężźćóńA-ZĄĘÓŃŻŹĆ\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
     public string? InPolish { get; set; }
 
-    [Required]
+    [Required(ErrorMessage = ValidationMessagePartOfSpeech)]
+    public int? PartOfSpeechId { get; set; }
     public string? PartOfSpeech { get; set; }
 }

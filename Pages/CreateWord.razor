@@ -25,18 +25,18 @@
         <p>
             <label>
                 Część mowy
-                <InputSelect @bind-Value="WordToSubmit.PartOfSpeech" class="form-select">
-                    <option>Wybierz część mowy...</option>
-                    <option>Rzeczownik</option>
-                    <option>Czasownik</option>
-                    <option>Przymiotnik</option>
-                    <option>Przysłówek</option>
-                    <option>Liczebnik</option>
-                    <option>Zaimek</option>
-                    <option>Inna</option>
+                <InputSelect @bind-Value="WordToSubmit.PartOfSpeechId" class="form-select">
+                    <option value="">Wybierz część mowy...</option>
+                    <option value="1">Rzeczownik</option>
+                    <option value="2">Czasownik</option>
+                    <option value="4">Przymiotnik</option>
+                    <option value="5">Przysłówek</option>
+                    <option value="3">Liczebnik</option>
+                    <option value="6">Zaimek</option>
+                    <option value="7">Inna</option>
                 </InputSelect>
             </label>
-            <ValidationMessage For="() => WordToSubmit.PartOfSpeech" />
+            <ValidationMessage For="() => WordToSubmit.PartOfSpeechId" />
         </p>
         <button type="submit" class="btn btn-primary">Zapisz</button>
     </EditForm>
@@ -65,10 +65,9 @@
                         <p>Stworzenie słowa się nie powiodło - <em>@response.StatusCode</em></p>
                     </div>
                 };
-                @* StateHasChanged(); *@
                 return;
             }
-            NavigationManager.NavigateTo("allwords", true);
+            NavigationManager.NavigateTo("allwords?actionsucceeded=true", true);
         }
         catch (Exception ex)
         {

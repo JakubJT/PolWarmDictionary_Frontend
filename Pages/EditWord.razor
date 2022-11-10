@@ -1,4 +1,4 @@
-@page "/editword/{word}"
+@page "/editword/{WordId}"
 @using System.Net.Http
 @using Models
 @inject HttpClient Http
@@ -25,17 +25,17 @@
         <p>
             <label>
                 Część mowy
-                <InputSelect @bind-Value="WordToSubmit.PartOfSpeech" class="form-select">
-                    <option>Rzeczownik</option>
-                    <option>Czasownik</option>
-                    <option>Przymiotnik</option>
-                    <option>Przysłówek</option>
-                    <option>Liczebnik</option>
-                    <option>Zaimek</option>
-                    <option>Inna</option>
+                <InputSelect @bind-Value="WordToSubmit.PartOfSpeechId" class="form-select">
+                    <option value="1">Rzeczownik</option>
+                    <option value="2">Czasownik</option>
+                    <option value="4">Przymiotnik</option>
+                    <option value="5">Przysłówek</option>
+                    <option value="3">Liczebnik</option>
+                    <option value="6">Zaimek</option>
+                    <option value="7">Inna</option>
                 </InputSelect>
             </label>
-            <ValidationMessage For="() => WordToSubmit.PartOfSpeech" />
+            <ValidationMessage For="() => WordToSubmit.PartOfSpeechId" />
         </p>
         <button type="submit" class="btn btn-primary">Zapisz</button>
     </EditForm>
@@ -49,13 +49,13 @@
     [CascadingParameter]
     public Error? Error { get; set; }
     [Parameter]
-    public string? Word { get; set; }
+    public string? WordId { get; set; }
     private Word? WordToSubmit { get; set; } = new();
     private RenderFragment? ErrorHandleMessage { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        string request = $"/getword?word={Word}&translateFromPolish=true";
+        string request = $"/getwordbyid?wordId={WordId}";
         try
         {
             var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
@@ -64,7 +64,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Nie znaleziono słowa "@Word" w bazie danych</p>
+                        <p>Nie znaleziono słowa w bazie danych</p>
                     </div>
                 };
                 return;
@@ -97,7 +97,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Nie znaleziono słowa "@Word" w bazie danych</p>
+                        <p>Nie znaleziono słowa w bazie danych</p>
                     </div>
                 };
                 return;
@@ -112,7 +112,7 @@
                 };
                 return;
             }
-            NavigationManager.NavigateTo("words", true);
+            NavigationManager.NavigateTo("allwords?actionsucceeded=true", true);
         }
         catch (Exception ex)
         {
