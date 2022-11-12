@@ -34,11 +34,13 @@
                             {
                                 <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="Polski" />
                                 <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="Warmiński" />
+                                <RadzenDataGridColumn TItem="Word" Property="PartOfSpeech" Title="Część mowy" />
                             }
                             else
                             {
                                 <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="Warmiński" />
                                 <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="Polski" />
+                                <RadzenDataGridColumn TItem="Word" Property="PartOfSpeech" Title="Część mowy" />
                             }
                         </Columns>
                     </RadzenDataGrid>
@@ -59,12 +61,14 @@
                         <HeaderContent>
                             <MudTh>@(PolishToWarmianTranslation ? "Polski" : "Warmiński")</MudTh>
                             <MudTh>@(PolishToWarmianTranslation ? "Warmiński" : "Polski")</MudTh>
+                            <MudTh>Część mowy</MudTh>
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel=@(PolishToWarmianTranslation ? "Polish" : "Warmian")>@(PolishToWarmianTranslation ?
                         @context.InPolish : @context.InWarmian)</MudTd>
                             <MudTd DataLabel=@(PolishToWarmianTranslation ? "Warmian" : "Polish")>@(PolishToWarmianTranslation ?
                         @context.InWarmian : @context.InPolish)</MudTd>
+                            <MudTd DataLabel=PartOfSpeech>@context.PartOfSpeech</MudTd>
                         </RowTemplate>
                     </MudTable>
                 </p>
@@ -159,9 +163,8 @@
                 return;
             }
 
-            var reponseData = await response.Content.ReadFromJsonAsync<Word>();
-            Result = new();
-            Result.Add(reponseData);
+            var reponseData = await response.Content.ReadFromJsonAsync<List<Word>>();
+            Result = reponseData;
 
             SessionStorageServices.SetItem("result", Result);
             SessionStorageServices.SetItem("word", TextValue);

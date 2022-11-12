@@ -240,7 +240,9 @@
         {
             var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/AllWords.razor.js");
             await module.InvokeVoidAsync("showActionToast");
+            ActionSucceeded = default;
         }
+        
     }
 
     private async Task GetWords(string sortBy, bool ascendingOrder, int pageNumber = 1, int wordsPerPage = 10)
