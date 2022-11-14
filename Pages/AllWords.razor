@@ -5,6 +5,7 @@
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
+@inject Endpoint Endpoint
 
 <PageTitle>Wszystkie słówka</PageTitle>
 
@@ -248,7 +249,7 @@
     private async Task GetWords(string sortBy, bool ascendingOrder, int pageNumber = 1, int wordsPerPage = 10)
     {        
             var response = await Http
-                            .GetAsync(Configuration["serviceEndpoint"] + "/GetWords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
+                            .GetAsync(Endpoint.Url + "/GetWords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
                             + $"&pageNumber={pageNumber}" + $"&wordsPerPage={wordsPerPage}");
             if (!response.IsSuccessStatusCode)
             {
@@ -426,7 +427,7 @@
     {
         try
         {
-            var deleteResponse = await Http.DeleteAsync(Configuration["serviceEndpoint"] + $"/DeleteWord?wordId={wordToDelete.Id}");
+            var deleteResponse = await Http.DeleteAsync(Endpoint.Url + $"/DeleteWord?wordId={wordToDelete.Id}");
             if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 ErrorHandleMessage = __builder =>

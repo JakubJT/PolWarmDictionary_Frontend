@@ -3,6 +3,7 @@
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject ISessionStorageService SessionStorageServices
+@inject Endpoint Endpoint
 
 <div>
     <p>
@@ -137,7 +138,7 @@
         try
         {
             string request = $"/getword?word={TextValue}&translateFromPolish={PolishToWarmianTranslation}";
-            var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
+            var response = await Http.GetAsync(Endpoint.Url + request);
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
                 ErrorHandleMessage = __builder =>

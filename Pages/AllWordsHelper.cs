@@ -18,7 +18,7 @@
 //     public async Task<(int, Words[])> GetWords(string sortBy, bool ascendingOrder, RenderFragment? ErrorHandleMessage, int pageNumber = 1, int wordsPerPage = 10)
 //     {
 //         var response = await _http
-//                         .GetAsync(_configuration["serviceEndpoint"] + "/GetWords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
+//                         .GetAsync(_Endpoint.Url+ "/GetWords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
 //                         + $"&pageNumber={pageNumber}" + $"&wordsPerPage={wordsPerPage}");
 //         if (!response.IsSuccessStatusCode)
 //         {

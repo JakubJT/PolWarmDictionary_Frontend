@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
+@inject Endpoint Endpoint
 
 <div>
     <EditForm Model="@WordToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
@@ -58,7 +59,7 @@
         string request = $"/getwordbyid?wordId={WordId}";
         try
         {
-            var response = await Http.GetAsync(Configuration["serviceEndpoint"] + request);
+            var response = await Http.GetAsync(Endpoint.Url + request);
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 ErrorHandleMessage = __builder =>
@@ -91,7 +92,7 @@
         string request = $"/editword";
         try
         {
-            var response = await Http.PostAsJsonAsync<Word>(Configuration["serviceEndpoint"] + request, WordToSubmit);
+            var response = await Http.PostAsJsonAsync<Word>(Endpoint.Url + request, WordToSubmit);
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
                 ErrorHandleMessage = __builder =>

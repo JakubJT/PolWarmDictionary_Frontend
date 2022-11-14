@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
+@inject Endpoint Endpoint
 
 <div>
     <EditForm Model="@WordToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
@@ -56,7 +57,7 @@
         string request = $"/createword";
         try
         {
-            var response = await Http.PostAsJsonAsync<Word>(Configuration["serviceEndpoint"] + request, WordToSubmit);
+            var response = await Http.PostAsJsonAsync<Word>(Endpoint.Url + request, WordToSubmit);
             if (!response.IsSuccessStatusCode)
             {
                 ErrorHandleMessage = __builder =>
