@@ -5,6 +5,7 @@
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 @inject IJSRuntime JS
+@inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
 
 <PageTitle>Wszystkie słówka</PageTitle>
@@ -205,9 +206,6 @@
 @code {
     [CascadingParameter]
     public Error? Error { get; set; }
-    [Parameter]
-    [SupplyParameterFromQuery]
-    public bool? ActionSucceeded { get; set; }
     private RenderFragment? ErrorHandleMessage { get; set; }
     private Word[]? words;
     private int numberOfPages;
@@ -243,11 +241,11 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if (ActionSucceeded == true)
+        if (SessionStorageServices.GetItem<bool?>("actionSucceeded") == true)
         {
             var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/AllWords.razor.js");
             await module.InvokeVoidAsync("showActionToast");
-            ActionSucceeded = default;
+            SessionStorageServices.SetItem("actionSucceeded", false);
         }
         
     }

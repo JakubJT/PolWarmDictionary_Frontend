@@ -4,6 +4,7 @@
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
+@inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
 
 <div>
@@ -68,7 +69,8 @@
                 };
                 return;
             }
-            NavigationManager.NavigateTo("allwords?actionsucceeded=true", true);
+            SessionStorageServices.SetItem("actionSucceeded", true);
+            NavigationManager.NavigateTo("allwords", true);
         }
         catch (Exception ex)
         {
