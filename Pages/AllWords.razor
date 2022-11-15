@@ -13,10 +13,16 @@
 <div>
     @if (words == null)
     {
-            <p><em>Wczytywanie...</em></p>
         if (ErrorHandleMessage != null)
         {
             @ErrorHandleMessage
+        }
+        else
+        {
+            <p><em>Wczytywanie...</em></p>
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
         }
     }
     else
