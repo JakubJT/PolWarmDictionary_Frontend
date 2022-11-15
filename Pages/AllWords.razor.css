@@ -9,18 +9,6 @@ table {
     border: none;
 }
 
-.invisible {
-    visibility: hidden;
-}
-
-.visible {
-    display: block;
-}
-
 .toast {
     margin-top: 0.5rem;
-}
-
-nav {
-    padding-bottom: 1rem;
 }
