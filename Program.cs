@@ -9,6 +9,7 @@ builder.RootComponents.Add<HeadOutlet>("head::after");
 
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<Endpoint>();
+builder.Services.AddTransient<Sorting>();
 builder.Services.AddMudServices();
 builder.Services.AddSessionStorageServices();
 

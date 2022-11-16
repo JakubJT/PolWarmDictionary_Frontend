@@ -7,6 +7,7 @@
 @inject IJSRuntime JS
 @inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
+@inject Sorting Sorting
 
 <PageTitle>Wszystkie słówka</PageTitle>
 
@@ -121,9 +122,6 @@
     private Word[]? words;
     private int numberOfPages;
     private Word? wordToDelete;
-    private bool ascendingOrderInPolish  { get; set; } = true;
-    private bool ascendingOrderInWarmian  { get; set; } = false;
-    private bool ascendingOrderPartOfSpeech  { get; set; } = false;
     private Pagination? paginationComponent {
         get { return _paginationComponent; } 
         set
@@ -184,67 +182,11 @@
         await GetWords(options.SortBy, options.AscendingOrder, options.pageNumber);
     }
 
-    private async Task SortClick(string sortBy)
+    public async Task SortClick (string sortBy)
     {
-        SortOptions.SortBy = sortBy;
-        switch(sortBy)
-        {
-            case "InPolish":
-                if (ascendingOrderInPolish)
-                {
-                    SortOptions.AscendingOrder = false;
-                    await GetWords(sortBy, false, currentPage);
-                    ascendingOrderInPolish = false;
-                }
-                else 
-                {
-                    SortOptions.AscendingOrder = true;
-                    await GetWords(sortBy, true, currentPage);
-                    ascendingOrderInPolish = true;
-
-                    ascendingOrderInWarmian = false;
-                    ascendingOrderPartOfSpeech = false;
-                }
-                break;
-            case "InWarmian":
-                if (ascendingOrderInWarmian)
-                {
-                    SortOptions.AscendingOrder = false;
-                    await GetWords(sortBy, false, currentPage);
-                    ascendingOrderInWarmian = false;
-                }
-                else 
-                {
-                    SortOptions.AscendingOrder = true;
-                    await GetWords(sortBy, true, currentPage);
-                    ascendingOrderInWarmian = true;
-
-                    ascendingOrderInPolish = false;
-                    ascendingOrderPartOfSpeech = false;
-                }
-                break;
-            case "PartOfSpeech":
-                if (ascendingOrderPartOfSpeech)
-                {
-                    SortOptions.AscendingOrder = false;
-                    await GetWords(sortBy, false, currentPage);
-                    ascendingOrderPartOfSpeech = false;
-                }
-                else 
-                {
-                    SortOptions.AscendingOrder = true;
-                    await GetWords(sortBy, true, currentPage);
-                    ascendingOrderPartOfSpeech = true;
-
-                    ascendingOrderInPolish = false;
-                    ascendingOrderInWarmian = false;
-                }
-                break;
-            default:
-                return;
-        }
+        SortOptions = Sorting.Sort(sortBy, SortOptions);
+        await GetWords(SortOptions.SortBy, SortOptions.AscendingOrder, currentPage);
     }
-
     public async Task DeleteClick(Word word)
     {
         wordToDelete = word;
