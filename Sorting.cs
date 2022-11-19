@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
-
 namespace PolWarmDictionary_Frontend;
 
 public class Sorting
@@ -7,10 +5,6 @@ public class Sorting
     private bool ascendingOrderInPolish { get; set; } = true;
     private bool ascendingOrderInWarmian { get; set; } = false;
     private bool ascendingOrderPartOfSpeech { get; set; } = false;
-    public Sorting(IWebAssemblyHostEnvironment hostEnvironment, IConfiguration configuration)
-    {
-
-    }
 
     public (string, bool) Sort(string sortBy, (string SortBy, bool AscendingOrder) sortOptions)
     {

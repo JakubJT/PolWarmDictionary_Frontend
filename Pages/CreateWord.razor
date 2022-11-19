@@ -1,10 +1,16 @@
 @page "/createword"
 @using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Text
+@using System.Text.Json
 @using Models
+@attribute [Authorize]
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 @inject ISessionStorageService SessionStorageServices
+@inject IAccessTokenProvider TokenProvider
 @inject Endpoint Endpoint
 
 <div>
@@ -55,10 +61,14 @@
     private RenderFragment? ErrorHandleMessage { get; set; }
     public async Task OnSubmit()
     {
-        string request = $"/createword";
+        string requestUri = Endpoint.Url + $"/createword";
         try
         {
-            var response = await Http.PostAsJsonAsync<Word>(Endpoint.Url + request, WordToSubmit);
+            var requestMessage = await GetHttpRequestMessage(HttpMethod.Post, requestUri);
+            string jsonPostRequest = JsonSerializer.Serialize(WordToSubmit);
+            requestMessage.Content = new StringContent(jsonPostRequest, Encoding.UTF8, "application/json");
+            var response = await Http.SendAsync(requestMessage);
+
             if (!response.IsSuccessStatusCode)
             {
                 ErrorHandleMessage = __builder =>
@@ -76,5 +86,20 @@
         {
             ErrorHandleMessage = Error?.HandleError(ex);
         }
+    }
+    private async Task<string> GetToken()
+    {
+        AccessToken accessToken;
+        var token = await TokenProvider.RequestAccessToken();
+        token.TryGetToken(out accessToken);
+        return accessToken.Value;
+    }
+
+    private async Task<HttpRequestMessage> GetHttpRequestMessage(HttpMethod httpMethod, string requestUri)
+    {
+        var requestMessage = new HttpRequestMessage(httpMethod, requestUri);
+        System.Net.Http.Headers.AuthenticationHeaderValue? authorization = new("Bearer", await GetToken());
+        requestMessage.Headers.Authorization = authorization;
+        return requestMessage;
     }
 }

@@ -12,12 +12,12 @@ public class Word
 
     [Required]
     [StringLength(16, MinimumLength = 2, ErrorMessage = ValidationMessageWarmian)]
-    [RegularExpression(@"^[A-ZĄĘÓŃŻŹĆŁ]+[a-ząężźćóńłA-ZĄĘÓŃŻŹĆŁ\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
+    [RegularExpression(@"^[A-ZĄĘÓŃŻŹĆŁŚ]+[a-ząężźćóńłśA-ZĄĘÓŃŻŹĆŁŚ\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
     public string? InWarmian { get; set; }
 
     [Required]
     [StringLength(16, MinimumLength = 2, ErrorMessage = ValidationMessagePolish)]
-    [RegularExpression(@"^[A-ZĄĘÓŃŻŹĆŁ]+[a-ząężźćóńłA-ZĄĘÓŃŻŹĆŁ\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
+    [RegularExpression(@"^[A-ZĄĘÓŃŻŹĆŁŚ]+[a-ząężźćóńłśA-ZĄĘÓŃŻŹĆŁŚ\s]*$", ErrorMessage = ValidationMessageOnlyLetters)]
     public string? InPolish { get; set; }
 
     [Required(ErrorMessage = ValidationMessagePartOfSpeech)]
