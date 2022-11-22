@@ -7,8 +7,6 @@
 <AuthorizeView>
     <Authorized>
         Witaj, @context.User.Identity?.Name!
-        @context.User.Identity.Name
-        @context.User.Identity.IsAuthenticated
         <button class="nav-link btn btn-link" @onclick="BeginLogout">Wyloguj się</button>
     </Authorized>
     <NotAuthorized>
