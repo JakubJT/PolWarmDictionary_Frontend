@@ -1,7 +1,7 @@
 ﻿@page "/"
 @inject ISessionStorageService SessionStorageServices
 
-<PageTitle>Strona Główna</PageTitle>
+<PageTitle>Słownik Polsko-Warmiński - Strona Główna</PageTitle>
 <h1>Witajcie w słowniku warmińsko-polskim/polsko-warmińskim!</h1>
 
 <div class="style-changer">
@@ -9,12 +9,14 @@
             bara</button></p>
     <p><span>@(IsRadzenBlazorStyle ? "Radzen.Blazor" : "Mud Blazor")</span></p>
 </div>
-<div class="search-bar">
-    <Search IsRadzenBlazorStyle=@IsRadzenBlazorStyle></Search>
-</div>
-<div>Żeby uzyskać dostęp do strony "Wszystkie słowa" podaj login:
-    <strong>admintestowy@polwarmdictionary.onmicrosoft.com"</strong>"
-    oraz hasło: <strong>"ADTestowy1!!"</strong>
+<div class="wrapper">
+    <div class="search-bar">
+        <Search IsRadzenBlazorStyle=@IsRadzenBlazorStyle></Search>
+    </div>
+    <div class="alert alert-info temporary" role="alert">Żeby uzyskać dostęp do strony "Wszystkie słowa" podaj login:
+        <strong>admintestowy@polwarmdictionary.onmicrosoft.com"</strong>"
+        oraz hasło: <strong>"ADTestowy1!!"</strong>
+    </div>
 </div>
 
 @code {

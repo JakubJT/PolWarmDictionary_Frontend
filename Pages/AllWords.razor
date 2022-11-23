@@ -17,7 +17,7 @@
 <PageTitle>Wszystkie słówka</PageTitle>
 
 <h1>Wszystkie słowa ze słownika</h1>
-<div>
+<div class="wrapper">
     @if (words == null)
     {
         if (ErrorHandleMessage != null)
@@ -52,8 +52,8 @@
                                 Część mowy
                              </button>
                         </th>
-                        <th></th>
-                        <th></th>
+                        <th class="narrow"></th>
+                        <th class="narrow"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -63,12 +63,12 @@
                                 <td>@word.InPolish</td>
                                 <td>@word.InWarmian</td>
                                 <td>@word.PartOfSpeech</td>
-                                <td>
+                                <td class="narrow">
                                     <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
                                          NavigationManager.NavigateTo($"/EditWord/{word.Id}"))>Edytuj
                                     </button>
                                 </td>
-                                <td>
+                                <td class="narrow">
                                     <button type="button" class="btn btn-danger btn-sm" @onclick=@(() =>
                                         DeleteClick(word)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button>
                                 </td>
@@ -210,7 +210,7 @@
         SortOptions = Sorting.Sort(sortBy, SortOptions);
         await GetWords(SortOptions.SortBy, SortOptions.AscendingOrder, currentPage);
     }
-    public async Task DeleteClick(Word word)
+    public void DeleteClick(Word word)
     {
         wordToDelete = word;
     }

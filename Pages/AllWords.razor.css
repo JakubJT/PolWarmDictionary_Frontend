@@ -1,5 +1,10 @@
+.wrapper {
+    display: flex;
+    flex-direction: column;
+}
+
 table {
-    width: auto;
+    max-width: 600px;
     vertical-align: unset;
 }
 
@@ -11,4 +16,9 @@ table {
 
 .toast {
     margin-top: 0.5rem;
+}
+
+.narrow {
+    max-width: 40px;
+    padding-right: 3.5rem;
 }
