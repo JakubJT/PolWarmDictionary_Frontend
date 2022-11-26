@@ -8,6 +8,16 @@ table {
     vertical-align: unset;
 }
 
+th {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
+td {
+    padding-left: 4px;
+    padding-right: 4px;
+}
+
 .header-button {
     padding: .05rem;
     font-weight: bold;
@@ -21,4 +31,5 @@ table {
 .narrow {
     max-width: 40px;
     padding-right: 3.5rem;
+    display: inline-flex;
 }

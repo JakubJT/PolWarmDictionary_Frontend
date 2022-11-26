@@ -52,8 +52,6 @@
                                 Część mowy
                              </button>
                         </th>
-                        <th class="narrow"></th>
-                        <th class="narrow"></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -65,7 +63,7 @@
                                 <td>@word.PartOfSpeech</td>
                                 <td class="narrow">
                                     <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
-                                         NavigationManager.NavigateTo($"/EditWord/{word.Id}"))>Edytuj
+                                        NavigationManager.NavigateTo($"/EditWord/{word.Id}"))>Edytuj
                                     </button>
                                 </td>
                                 <td class="narrow">

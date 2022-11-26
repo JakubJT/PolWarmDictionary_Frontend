@@ -24,4 +24,6 @@
 
 .temporary {
     max-width: 600px;
+    word-wrap: normal;
+    overflow-wrap: anywhere;
 }
