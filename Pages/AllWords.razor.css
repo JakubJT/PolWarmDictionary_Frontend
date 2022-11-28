@@ -29,7 +29,19 @@ td {
 }
 
 .narrow {
-    max-width: 40px;
     padding-right: 3.5rem;
-    display: inline-flex;
+    max-width: 55px;
+}
+
+@media (max-width: 640.98px) {
+    .narrow button {
+        display: inline-flex;
+        min-width: 45px;
+    }
+
+    .narrow {
+        display: inline-flex;
+        padding-bottom: 4px;
+        padding-top: 4px;
+    }
 }
