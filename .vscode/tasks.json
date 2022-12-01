@@ -7,7 +7,7 @@
             "type": "process",
             "args": [
                 "build",
-                "${workspaceFolder}/BlazorTest.csproj",
+                "${workspaceFolder}/PolWarmDictionary_Frontend.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -19,7 +19,7 @@
             "type": "process",
             "args": [
                 "publish",
-                "${workspaceFolder}/BlazorTest.csproj",
+                "${workspaceFolder}/PolWarmDictionary_Frontend.csproj",
                 "/property:GenerateFullPaths=true",
                 "/consoleloggerparameters:NoSummary"
             ],
@@ -33,7 +33,7 @@
                 "watch",
                 "run",
                 "--project",
-                "${workspaceFolder}/BlazorTest.csproj"
+                "${workspaceFolder}/PolWarmDictionary_Frontend.csproj"
             ],
             "problemMatcher": "$msCompile"
         }
