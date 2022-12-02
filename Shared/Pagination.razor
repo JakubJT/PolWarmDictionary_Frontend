@@ -2,201 +2,156 @@
     <nav aria-label="Page navigation">
         <ul class="pagination">
             <li class="page-item">
-            @if(previousPage != 0)
-            {
-                <button class="page-link" @onclick=@(async() =>
+            @if (previousPage != 0)
+                {
+                    <button class="page-link" @onclick=@(async() =>
                 {
                     await CurrentPageChanged.InvokeAsync(previousPage); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, previousPage));
                 }
                 )><i class="bi bi-arrow-left-circle"></i></button>
-            }
-            else {<button class="page-link invisible" disabled = true><i class="bi bi-arrow-left-circle"></i></button>}
-            </li>
-            <li class="@(CurrentPage == pageArray[0] ? "page-item active" : "page-item")">
-                <button class="page-link" @onclick=@(async() =>
-                {
-                    await CurrentPageChanged.InvokeAsync(pageArray[0]); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, pageArray[0]));
                 }
-                )>@pageArray[0]</button>
+                else
+                {
+                    <button class="page-link invisible" disabled = true><i class="bi bi-arrow-left-circle"></i></button>
+                }
             </li>
-            <li class="@(CurrentPage == pageArray[1] ? "page-item active" : "page-item")">
-            @if(pageArray[1] == 0 && NumberOfPages > 1){<button class="page-link" disabled = true>...</button>}
-            else if(pageArray[1] != 0)
+            @foreach (var pageNumber in @pageArray)
             {
-                <button class="page-link" @onclick=@(async() =>
+                if(pageNumber != null)
                 {
-                    await CurrentPageChanged.InvokeAsync(pageArray[1]); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, pageArray[1]));
+                    <li class="@(CurrentPage == pageNumber ? "page-item active" : "page-item")">
+                    @if (pageNumber == 0 && NumberOfPages > 1)
+                    {
+                        <button class="page-link" disabled = true>...</button>
+                    }
+                    else if (pageNumber > 0)
+                    {
+                            <button class="page-link" @onclick=@(async() =>
+                    {
+                        await CurrentPageChanged.InvokeAsync((int)pageNumber); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, (int)pageNumber));
+                    }
+                    )>@pageNumber</button>
+                    }
+                    </li>
                 }
-                )>@pageArray[1]</button>
             }
-            </li>
-            <li class="@(CurrentPage == pageArray[2] ? "page-item active" : "page-item")">
-            @if(pageArray[2] != 0)
-            {
-                <button class="page-link" @onclick=@(async() =>
-                {
-                    await CurrentPageChanged.InvokeAsync(pageArray[2]); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, pageArray[2]));
-                }
-                )>@pageArray[2]</button>
-            }
-            </li>
-            <li class="@(CurrentPage == pageArray[3] ? "page-item active" : "page-item")">
-            @if(pageArray[3] != 0)
-            {
-                <button class="page-link" @onclick=@(async() =>
-                {
-                    await CurrentPageChanged.InvokeAsync(pageArray[3]); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, pageArray[3]));
-                }
-                )>@pageArray[3]</button>
-            }
-            </li>
-            <li class="@(CurrentPage == pageArray[4] ? "page-item active" : "page-item")">
-            @if(pageArray[4] != 0)
-            {
-                <button class="page-link" @onclick=@(async() =>
-                {
-                    await CurrentPageChanged.InvokeAsync(pageArray[4]); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, pageArray[4]));
-                }
-                )>@pageArray[4]</button>
-            }
-            </li>
-            <li class="@(CurrentPage == pageArray[5] ? "page-item active" : "page-item")">
-            @if(pageArray[5] == 0 && NumberOfPages > 5){<button class="page-link" disabled = true>...</button>}
-            else if(pageArray[5] != 0)
-            {
-                <button class="page-link" @onclick=@(async() =>
-                {
-                    await CurrentPageChanged.InvokeAsync(pageArray[5]); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, pageArray[5]));
-                }
-                )>@pageArray[5]</button>
-            }
-            </li>
-            <li class="@(CurrentPage == pageArray[6] ? "page-item active" : "page-item")">
-            @if(pageArray[6] != 0)
-            {
-                <button class="page-link" @onclick=@(async() =>
-                {
-                    await CurrentPageChanged.InvokeAsync(pageArray[6]); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, pageArray[6]));
-                }
-                )>@pageArray[6]</button>
-            }
-            </li>
             <li class="page-item">
-            @if(nextPage != 0)
-            {
-                <button class="page-link" @onclick=@(async() =>
+                @if (nextPage != 0)
+                {
+                    <button class="page-link" @onclick=@(async() =>
                 {
                     await CurrentPageChanged.InvokeAsync(nextPage); await GetWords.InvokeAsync(((SortOptions.SortBy, SortOptions.AscendingOrder, nextPage)));
                 }
                 )><i class="bi bi-arrow-right-circle"></i></button>
-            }
+                }
             </li>
         </ul>
     </nav>
 </div>
-    @code {
-        [CascadingParameter(Name = "NumberOfPages")]
-        public int NumberOfPages {get;set;}
-        [CascadingParameter(Name = "SortOptions")]
-        public (string SortBy, bool AscendingOrder) SortOptions {get;set;}
-        [Parameter]
-        public int CurrentPage {get;set;}
-        [Parameter]
-        public EventCallback<int> CurrentPageChanged {get;set;}
-        [Parameter]
-        public EventCallback<(string,bool,int)> GetWords { get; set; }
-        private int previousPage {get;set;}
-        private int nextPage {get;set;}
-        private int[] pageArray {get;set;} = new int[7];
 
-        public void Paginate()
+@code {
+    [Parameter]
+    public int NumberOfPages { get; set; }
+    [Parameter]
+    public (string SortBy, bool AscendingOrder) SortOptions { get; set; }
+    [Parameter]
+    public int CurrentPage { get; set; }
+    [Parameter]
+    public EventCallback<int> CurrentPageChanged { get; set; }
+    [Parameter]
+    public EventCallback<(string, bool, int)> GetWords { get; set; }
+    private int previousPage { get; set; }
+    private int nextPage { get; set; }
+    private int?[] pageArray { get; set; } = new int?[7];
+
+    public void Paginate()
+    {
+        if (NumberOfPages <= 7)
         {
-            if (NumberOfPages <= 7)
-            {
-                pageArray[0] = 1;
-                pageArray[1] = NumberOfPages > 1 ? 2 : 0;
-                pageArray[2] = NumberOfPages > 2 ? 3 : 0;
-                pageArray[3] = NumberOfPages > 3 ? 4 : 0;
-                pageArray[4] = NumberOfPages > 4 ? 5 : 0;
-                pageArray[5] = NumberOfPages > 5 ? 6 : 0;
-                pageArray[6] = NumberOfPages > 6 ? 7 : 0;
+            pageArray[0] = 1;
+            pageArray[1] = NumberOfPages > 1 ? 2 : null;
+            pageArray[2] = NumberOfPages > 2 ? 3 : null;
+            pageArray[3] = NumberOfPages > 3 ? 4 : null;
+            pageArray[4] = NumberOfPages > 4 ? 5 : null;
+            pageArray[5] = NumberOfPages > 5 ? 6 : null;
+            pageArray[6] = NumberOfPages > 6 ? 7 : null;
 
-                if(CurrentPage == 1)
-                {
-                    previousPage = 0;
-                    nextPage = 2;
-                }
-                else if (CurrentPage == 7)
-                {
-                    previousPage = 6;
-                    nextPage = 0;
-                }
-                else
-                {
-                    previousPage = CurrentPage - 1;
-                    nextPage = NumberOfPages == CurrentPage ? 0 : CurrentPage + 1;
-                }
+            if (CurrentPage == 1)
+            {
+                previousPage = 0;
+                nextPage = 2;
             }
-            else if (NumberOfPages >= 8)
+            else if (CurrentPage == 7)
             {
-                pageArray[0] = 1;
-                pageArray[6] = NumberOfPages;
-
-                if (CurrentPage == 1)
-                {
-                    pageArray[1] = 2;
-                    pageArray[2] = 3;
-                    pageArray[3] = 4;
-                    pageArray[4] = 5;
-                    pageArray[5] = 0;
-
-                    nextPage = 2;
-                    previousPage = 0;
-                }
-                else if (CurrentPage == NumberOfPages)
-                {
-                    pageArray[1] = 0;
-                    pageArray[2] = CurrentPage - 4;
-                    pageArray[3] = CurrentPage - 3;
-                    pageArray[4] = CurrentPage - 2;
-                    pageArray[5] = CurrentPage - 1;
-
-                    nextPage = 0;
-                    previousPage = CurrentPage - 1;
-                }
-                else if (CurrentPage >= 2 && CurrentPage < 5)
-                {
-                    pageArray[1] = 2;
-                    pageArray[2] = 3;
-                    pageArray[3] = 4;
-                    pageArray[4] = 5;
-                    pageArray[5] = 0;
-
-                    nextPage = CurrentPage + 1;
-                    previousPage = CurrentPage - 1;
-                }
-                else if (CurrentPage != 8 && CurrentPage > 4 && CurrentPage < (NumberOfPages-3))
-                {
-                    pageArray[1] = 0;
-                    pageArray[2] = CurrentPage - 1;
-                    pageArray[3] = CurrentPage;
-                    pageArray[4] = CurrentPage + 1;
-                    pageArray[5] = 0;
-
-                    nextPage = CurrentPage + 1;
-                    previousPage = CurrentPage - 1;
-                }
-                else if (CurrentPage >= (NumberOfPages-3) && CurrentPage < NumberOfPages)
-                {
-                    pageArray[1] = 0;
-                    pageArray[2] = NumberOfPages - 4;
-                    pageArray[3] = NumberOfPages - 3;
-                    pageArray[4] = NumberOfPages - 2;
-                    pageArray[5] = NumberOfPages -1;
-
-                    nextPage = CurrentPage + 1;
-                    previousPage = CurrentPage - 1;
-                }
+                previousPage = 6;
+                nextPage = 0;
+            }
+            else
+            {
+                previousPage = CurrentPage - 1;
+                nextPage = NumberOfPages == CurrentPage ? 0 : CurrentPage + 1;
             }
         }
+        else if (NumberOfPages >= 8)
+        {
+            pageArray[0] = 1;
+            pageArray[6] = NumberOfPages;
+
+            if (CurrentPage == 1)
+            {
+                pageArray[1] = 2;
+                pageArray[2] = 3;
+                pageArray[3] = 4;
+                pageArray[4] = 5;
+                pageArray[5] = 0;
+
+                nextPage = 2;
+                previousPage = 0;
+            }
+            else if (CurrentPage == NumberOfPages)
+            {
+                pageArray[1] = 0;
+                pageArray[2] = CurrentPage - 4;
+                pageArray[3] = CurrentPage - 3;
+                pageArray[4] = CurrentPage - 2;
+                pageArray[5] = CurrentPage - 1;
+
+                nextPage = 0;
+                previousPage = CurrentPage - 1;
+            }
+            else if (CurrentPage >= 2 && CurrentPage < 5)
+            {
+                pageArray[1] = 2;
+                pageArray[2] = 3;
+                pageArray[3] = 4;
+                pageArray[4] = 5;
+                pageArray[5] = 0;
+
+                nextPage = CurrentPage + 1;
+                previousPage = CurrentPage - 1;
+            }
+            else if (CurrentPage != 8 && CurrentPage > 4 && CurrentPage < (NumberOfPages - 3))
+            {
+                pageArray[1] = 0;
+                pageArray[2] = CurrentPage - 1;
+                pageArray[3] = CurrentPage;
+                pageArray[4] = CurrentPage + 1;
+                pageArray[5] = 0;
+
+                nextPage = CurrentPage + 1;
+                previousPage = CurrentPage - 1;
+            }
+            else if (CurrentPage >= (NumberOfPages - 3) && CurrentPage < NumberOfPages)
+            {
+                pageArray[1] = 0;
+                pageArray[2] = NumberOfPages - 4;
+                pageArray[3] = NumberOfPages - 3;
+                pageArray[4] = NumberOfPages - 2;
+                pageArray[5] = NumberOfPages - 1;
+
+                nextPage = CurrentPage + 1;
+                previousPage = CurrentPage - 1;
+            }
+        }
+    }
     }

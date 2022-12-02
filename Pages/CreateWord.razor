@@ -19,7 +19,7 @@
         <p>
             <label>
                 Po polsku:
-                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit.InPolish" />
+                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit!.InPolish" />
             </label>
             <ValidationMessage For="() => WordToSubmit.InPolish" />
         </p>

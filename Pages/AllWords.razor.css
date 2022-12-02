@@ -28,15 +28,10 @@ td {
     margin-top: 0.5rem;
 }
 
-.narrow {
-    padding-right: 3.5rem;
-    max-width: 55px;
-}
-
 @media (max-width: 640.98px) {
     .narrow button {
         display: inline-flex;
-        min-width: 45px;
+        min-width: 56px;
     }
 
     .narrow {

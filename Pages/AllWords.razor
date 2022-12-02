@@ -75,11 +75,8 @@
                 </tbody>
             </table>
             <div>
-                <CascadingValue Value="@numberOfPages" Name="NumberOfPages">
-                    <CascadingValue Value="@SortOptions" Name="SortOptions">
-                        <Pagination GetWords="@GetWords" @bind-CurrentPage="currentPage" @ref="paginationComponent"></Pagination>
-                    </CascadingValue>
-                </CascadingValue>
+                <Pagination GetWords="@GetWords" @bind-CurrentPage="currentPage"
+                    @ref="paginationComponent" SortOptions="@SortOptions" NumberOfPages="@numberOfPages"></Pagination>
             </div>
             <div>            
                 <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
@@ -124,13 +121,14 @@
     private RenderFragment? ErrorHandleMessage { get; set; }
     private Word[]? words;
     private int numberOfPages;
+    private int wordsPerPage {get;set;} = 10;
     private Word? wordToDelete;
     private Pagination? paginationComponent {
         get { return _paginationComponent; } 
         set
         {
             _paginationComponent = value;
-            _paginationComponent.Paginate();
+            _paginationComponent!.Paginate();
         }}
     private Pagination? _paginationComponent; 
 
@@ -142,7 +140,7 @@
     {
         try
         {   
-            await GetWords(SortOptions.SortBy, SortOptions.AscendingOrder, 1, 10);
+            await GetWords(SortOptions.SortBy, SortOptions.AscendingOrder, 1);
         }
         catch (Exception ex)
         {
@@ -160,7 +158,7 @@
         }   
     }
     
-    private async Task GetWords(string sortBy, bool ascendingOrder, int pageNumber = 1, int wordsPerPage = 10)
+    private async Task GetWords(string sortBy, bool ascendingOrder, int pageNumber = 1)
     {        
             string requestUri = Endpoint.Url + "/GetWords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
                             + $"&pageNumber={pageNumber}" + $"&wordsPerPage={wordsPerPage}";
@@ -178,8 +176,8 @@
                 return;
             }
             var result = await response.Content.ReadFromJsonAsync<Words>();
-            numberOfPages = result.NumbeOfPages;
-            words = result.WordList.ToArray();
+            numberOfPages = result!.NumberOfPages;
+            words = result.WordList!.ToArray();
             paginationComponent?.Paginate();
     }
     private async Task GetWords((string SortBy, bool AscendingOrder, int pageNumber) options)
@@ -216,7 +214,7 @@
     {
         try
         {
-            string requestUri = Endpoint.Url + $"/DeleteWord?wordId={wordToDelete.Id}";            
+            string requestUri = Endpoint.Url + $"/DeleteWord?wordId={wordToDelete!.Id}";            
             var requestMessage = await GetHttpRequestMessage(HttpMethod.Delete, requestUri);
             var deleteResponse = await Http.SendAsync(requestMessage);
             if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)

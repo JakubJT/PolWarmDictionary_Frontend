@@ -2,6 +2,10 @@
     visibility: hidden;
 }
 
+.page-link:focus {
+    box-shadow: none;
+}
+
 nav {
     padding-bottom: 1rem;
 }
