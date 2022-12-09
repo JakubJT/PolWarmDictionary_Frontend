@@ -160,7 +160,7 @@
     
     private async Task GetWords(string sortBy, bool ascendingOrder, int pageNumber = 1)
     {        
-            string requestUri = Endpoint.Url + "/GetWords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
+            string requestUri = Endpoint.Url + "/word/getwords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
                             + $"&pageNumber={pageNumber}" + $"&wordsPerPage={wordsPerPage}";
             var requestMessage = await GetHttpRequestMessage(HttpMethod.Get, requestUri);
             var response = await Http.SendAsync(requestMessage);
@@ -214,7 +214,7 @@
     {
         try
         {
-            string requestUri = Endpoint.Url + $"/DeleteWord?wordId={wordToDelete!.Id}";            
+            string requestUri = Endpoint.Url + $"/word/deleteword?wordId={wordToDelete!.Id}";            
             var requestMessage = await GetHttpRequestMessage(HttpMethod.Delete, requestUri);
             var deleteResponse = await Http.SendAsync(requestMessage);
             if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)

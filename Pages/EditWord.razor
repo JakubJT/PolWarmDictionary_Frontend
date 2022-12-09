@@ -63,7 +63,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        string request = $"/getwordbyid?wordId={WordId}";
+        string request = $"/word/getwordbyid?wordId={WordId}";
         try
         {
             var response = await Http.GetAsync(Endpoint.Url + request);
@@ -96,7 +96,7 @@
     }
     public async Task OnSubmit()
     {
-        string requestUri = Endpoint.Url + $"/editword";
+        string requestUri = Endpoint.Url + $"/word/editword";
         try
         {
             var requestMessage = await GetHttpRequestMessage(HttpMethod.Post, requestUri);

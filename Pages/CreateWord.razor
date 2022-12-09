@@ -61,7 +61,7 @@
     private RenderFragment? ErrorHandleMessage { get; set; }
     public async Task OnSubmit()
     {
-        string requestUri = Endpoint.Url + $"/createword";
+        string requestUri = Endpoint.Url + $"/word/createword";
         try
         {
             var requestMessage = await GetHttpRequestMessage(HttpMethod.Post, requestUri);

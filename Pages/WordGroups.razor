@@ -1,0 +1,283 @@
+@page "/wordgroups"
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using Models
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@inject ISessionStorageService SessionStorageServices
+@inject Endpoint Endpoint
+@inject Sorting Sorting
+@inject IAccessTokenProvider TokenProvider
+
+
+<PageTitle>Twoje kolekcje słów</PageTitle>
+
+<h1>Wszystkie słowa ze słownika</h1>
+<div class="wrapper">
+    @if (wordGroups == null)
+    {
+        if (ErrorHandleMessage != null)
+        {
+            @ErrorHandleMessage
+        }
+        else
+        {
+            <p><em>Wczytywanie...</em></p>
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        }
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>
+                        <button type="button" class="btn btn-outline-secondary btn-sm header-button">
+                            Nazwa
+                        </button>
+                    </th>
+                    <th>
+                        <button type="button" class="btn btn-outline-secondary btn-sm header-button">
+                            Ilość słów
+                        </button>
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var wordGroup in wordGroups)
+                {
+                    <tr>
+                        <td>@wordGroup.Name</td>
+                        <td>@wordGroup.Words!.Count()</td>
+                        <td class="narrow">
+                            <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
+                        NavigationManager.NavigateTo($"/EditWordGroup/{wordGroup.WordGroupId}"))>Edytuj
+                            </button>
+                        </td>
+                        <td class="narrow">
+                            @* <button type="button" class="btn btn-danger btn-sm" @onclick=@(() =>
+                                DeleteClick(word)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button> *@
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        @* <div>
+            <Pagination GetWords="@GetWords" @bind-CurrentPage="currentPage"
+            @ref="paginationComponent" SortOptions="@SortOptions" NumberOfPages="@numberOfPages"></Pagination>
+            </div> *@
+        <div>
+            <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
+            NavigationManager.NavigateTo($"/CreateWord"))>Utwórz nową kolekcję</button>
+        </div>
+
+    }
+</div>
+<button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">Utwórz nową
+    grupę</button>
+
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Nowa kolekcja</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <EditForm Model="@GroupToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
+                    <DataAnnotationsValidator />
+                    <p>
+                        <label>
+                            Nazwa kolekcji:
+                            <InputText minlength=1 maxlength=16 class="form-control"
+                                @bind-Value="GroupToSubmit!.Name" />
+                        </label>
+                        <ValidationMessage For="() => GroupToSubmit.Name" />
+                    </p>
+                    <p>
+                        <label>
+                            Id słowa:
+                            <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="GroupToSubmit.Id" />
+                        </label>
+                        <ValidationMessage For="() => GroupToSubmit.Id" />
+                    </p>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Zapisz</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+@* <div class="toast-container position-fixed bottom-0 end-0 p-3">
+    <div class="toast bg-info" id="actionToast" role="alert" aria-live="assertive" aria-atomic="true">
+    <div class="d-flex">
+    <div class="toast-body">
+    Dodanie/edycja słowa powiodła sie.
+    </div>
+    <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+    </div>
+    </div>
+    </div> *@
+
+@* <div class="modal fade" id="deleteWordModal" tabindex="-1" aria-labelledby="deleteWordModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+    <div class="modal-content">
+    <div class="modal-header">
+    <h5 class="modal-title" id="deleteWordModalLabel">Usuwanie słowa</h5>
+    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+    </div>
+    <div class="modal-body">
+    <p>Na pewno chcesz usunąć słowo <em>@wordToDelete?.InPolish</em>?</p>
+    </div>
+    <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
+    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="DeleteWord">Tak</button>
+    </div>
+    </div>
+    </div>
+    </div> *@
+
+
+@code {
+    [CascadingParameter]
+    public Error? Error { get; set; }
+    private RenderFragment? ErrorHandleMessage { get; set; }
+    private List<WordGroup>? wordGroups;
+    private WordGroupToSubmit GroupToSubmit { get; set; } = new();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await GetWordGroups();
+        }
+        catch (Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        @* if (SessionStorageServices.GetItem<bool?>("actionSucceeded") == true)
+            {
+            var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/AllWords.razor.js");
+            await module.InvokeVoidAsync("showActionToast");
+            SessionStorageServices.SetItem("actionSucceeded", false);
+            } *@
+    }
+
+    private async Task GetWordGroups()
+    {
+        try
+        {
+            string requestUri = Endpoint.Url + $"/wordgroup/getallwordgroups";
+            var requestMessage = await GetHttpRequestMessage(HttpMethod.Get, requestUri);
+            var getResponse = await Http.SendAsync(requestMessage);
+            if (getResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Nie masz jeszcze utworzonych żadnych kolekcji słów
+                    </div>
+                };
+            }
+            else if (!getResponse.IsSuccessStatusCode)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Pobranie kolekcji słów się nie powiodło - <em>{getResponse.StatusCode}</em>
+                    </div>
+                };
+                return;
+            }
+
+            wordGroups = await getResponse.Content.ReadFromJsonAsync<List<WordGroup>>();
+        }
+        catch (Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+
+    private async Task<string> GetToken()
+    {
+        AccessToken accessToken;
+        var token = await TokenProvider.RequestAccessToken();
+        token.TryGetToken(out accessToken);
+        return accessToken.Value;
+    }
+
+    private async Task<HttpRequestMessage> GetHttpRequestMessage(HttpMethod httpMethod, string requestUri)
+    {
+        var requestMessage = new HttpRequestMessage(httpMethod, requestUri);
+        System.Net.Http.Headers.AuthenticationHeaderValue? authorization = new("Bearer", await GetToken());
+        requestMessage.Headers.Authorization = authorization;
+        return requestMessage;
+    }
+
+    private async Task OnSubmit()
+    {
+        Console.WriteLine(GroupToSubmit.Name);
+        Console.WriteLine(GroupToSubmit.Id);
+    }
+
+    @* public async Task SortClick (string sortBy)
+        {
+        SortOptions = Sorting.Sort(sortBy, SortOptions);
+        await GetWords(SortOptions.SortBy, SortOptions.AscendingOrder, currentPage);
+        }
+        public void DeleteClick(Word word)
+        {
+        wordToDelete = word;
+        }
+        public async Task DeleteWord()
+        {
+        try
+        {
+        string requestUri = Endpoint.Url + $"/DeleteWord?wordId={wordToDelete!.Id}";
+        var requestMessage = await GetHttpRequestMessage(HttpMethod.Delete, requestUri);
+        var deleteResponse = await Http.SendAsync(requestMessage);
+        if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+        {
+        ErrorHandleMessage = __builder =>
+        {
+        <div class="alert alert-warning" role="alert">
+        Nie znaleziono słowa "@wordToDelete.InPolish" w bazie danych
+        </div>
+        };
+        }
+        else if (!deleteResponse.IsSuccessStatusCode)
+        {
+        ErrorHandleMessage = __builder =>
+        {
+        <div class="alert alert-warning" role="alert">
+        Usunięcie słowa się nie powiodło - <em>{response.StatusCode}</em>
+        </div>
+        };
+        return;
+        }
+        await GetWords("InPolish", true);
+        }
+        catch(Exception ex)
+        {
+        ErrorHandleMessage = Error?.HandleError(ex);
+        }
+        } *@
+}
