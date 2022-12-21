@@ -29,7 +29,8 @@
             @if (Result != null)
             {
                 <p>
-                    <RadzenDataGrid TItem="Word" Data="@Result">
+                    <RadzenDataGrid TItem="Word" Data="@Result" SelectionMode="DataGridSelectionMode.Single"
+                @bind-Value=@selectedWord>
                         <Columns>
                             @if (PolishToWarmianTranslation)
                             {
@@ -46,6 +47,12 @@
                         </Columns>
                     </RadzenDataGrid>
                 </p>
+                @if (EditGroupMode)
+                {
+                    <button type="button" class="btn btn-primary btn-sm" @onclick=@(()=> { if(selectedWord !=null)
+            AddWord.InvokeAsync(selectedWord.FirstOrDefault());})>Dodaj
+                    </button>
+                }
             }
         </form>
     }
@@ -88,9 +95,14 @@
     public Error? Error { get; set; }
     [Parameter, EditorRequired]
     public bool IsRadzenBlazorStyle { get; set; }
+    [Parameter]
+    public EventCallback<Word> AddWord { get; set; }
+    [Parameter]
+    public bool EditGroupMode { get; set; } = false;
     private string? TextValue { get; set; }
     private bool PolishToWarmianTranslation { get; set; } = true;
     private List<Word>? Result { get; set; }
+    private IList<Word> selectedWord;
     private RenderFragment? ErrorHandleMessage { get; set; }
 
     public void ChangeLanguage()
@@ -101,6 +113,7 @@
 
     protected override void OnInitialized()
     {
+        if (EditGroupMode) return;
         LoadValuesFromStorage();
     }
 
@@ -137,7 +150,7 @@
 
         try
         {
-            string request = $"/getword?word={TextValue}&translateFromPolish={PolishToWarmianTranslation}";
+            string request = $"/word/getword?word={TextValue}&translateFromPolish={PolishToWarmianTranslation}";
             var response = await Http.GetAsync(Endpoint.Url + request);
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
@@ -148,6 +161,8 @@
                     </div>
 
                 };
+
+                if (EditGroupMode) return;
                 SessionStorageServices.SetItem("result", Result);
                 SessionStorageServices.SetItem("word", TextValue);
                 return;

@@ -1,0 +1,140 @@
+@using System.Net.Http
+@using Models
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
+@using System.Text.Json
+@using System.Text
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
+@inject ISessionStorageService SessionStorageServices
+@inject IAccessTokenProvider TokenProvider
+@inject Endpoint Endpoint
+
+<div>
+    @WordGroup!.Name
+    <EditForm Model="@WordGroup" OnValidSubmit="@OnSubmit" class="mb-3">
+        <DataAnnotationsValidator />
+        <p>
+            <label>
+                Nazwa kolekcji:
+                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordGroup!.Name" />
+            </label>
+            <ValidationMessage For="() => WordGroup.Name" />
+        </p>
+        <p>
+            <label>
+                Id słowa:
+                <InputText disabled="true" class="form-control" @bind-Value="WordGroup.UserADId" />
+            </label>
+        </p>
+        @foreach (var word in WordGroup!.Words!)
+        {
+            <p>
+            <div class="word">
+                <div class="word-text">
+                    <InputText disabled="true" minlength=1 maxlength=16 class="form-control" @bind-Value="word.InPolish" />
+                </div>
+                <div class="word-text">
+                    <InputText disabled="true" minlength=1 maxlength=16 class="form-control" @bind-Value="word.InWarmian" />
+                </div>
+                <button type="button" class="btn btn-danger btn-sm word-button" @onclick=@(() =>
+                DeleteClick(word))>Usuń</button>
+            </div>
+            </p>
+        }
+        <div class="search">
+            <Search IsRadzenBlazorStyle="true" EditGroupMode="true" AddWord=@AddWord></Search>
+        </div>
+        <button type="button" class="btn btn-secondary" @onclick=@(() =>
+            EditModeChanged.InvokeAsync(false))>Wróć</button>
+        <button type="submit" class="btn btn-primary">Zapisz</button>
+    </EditForm>
+</div>
+@if (ErrorHandleMessage != null)
+{
+    <p>@ErrorHandleMessage</p>
+}
+
+@code {
+    [CascadingParameter]
+    public Error? Error { get; set; }
+    [Parameter]
+    public WordGroup? WordGroup { get; set; }
+    [Parameter]
+    public bool EditMode { get; set; }
+    [Parameter]
+    public EventCallback<bool> EditModeChanged { get; set; }
+    private RenderFragment? ErrorHandleMessage { get; set; }
+
+    protected override async Task OnInitializedAsync()
+    {
+    }
+
+    public async Task OnSubmit()
+    {
+        string requestUri = Endpoint.Url + $"/wordgroup/editwordgroup";
+        try
+        {
+            var requestMessage = await GetHttpRequestMessage(HttpMethod.Post, requestUri);
+            string jsonPostRequest = JsonSerializer.Serialize(WordGroup);
+            requestMessage.Content = new StringContent(jsonPostRequest, Encoding.UTF8, "application/json");
+            var response = await Http.SendAsync(requestMessage);
+
+            if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <p>Nie znaleziono kolekcji słów w bazie danych</p>
+                    </div>
+                };
+                return;
+            }
+            else if (!response.IsSuccessStatusCode)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        <p>Edycja kolekcji słów się nie powiodła - <em>@response.StatusCode</em></p>
+                    </div>
+                };
+                return;
+            }
+            SessionStorageServices.SetItem("actionSucceeded", true);
+            await EditModeChanged.InvokeAsync(false);
+        }
+        catch (Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+
+    public void AddWord(Word word)
+    {
+        WordGroup!.Words!.Add(word);
+    }
+
+    private async Task<string> GetToken()
+    {
+        AccessToken accessToken;
+        var token = await TokenProvider.RequestAccessToken();
+        token.TryGetToken(out accessToken);
+        return accessToken.Value;
+    }
+
+    private async Task<HttpRequestMessage> GetHttpRequestMessage(HttpMethod httpMethod, string requestUri)
+    {
+        var requestMessage = new HttpRequestMessage(httpMethod, requestUri);
+        System.Net.Http.Headers.AuthenticationHeaderValue? authorization = new("Bearer", await GetToken());
+        requestMessage.Headers.Authorization = authorization;
+        return requestMessage;
+    }
+
+    private void DeleteClick(Word word)
+    {
+        WordGroup!.Words!.Remove(word);
+    }
+
+}
