@@ -11,7 +11,7 @@
 @inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
 @inject Sorting Sorting
-@inject IAccessTokenProvider TokenProvider
+@inject RequestMessageGenerator RequestMessageGenerator
 
 
 <PageTitle>Twoje kolekcje słów</PageTitle>
@@ -194,7 +194,7 @@ else
         try
         {
             string requestUri = Endpoint.Url + $"/wordgroup/getallwordgroups";
-            var requestMessage = await GetHttpRequestMessage(HttpMethod.Get, requestUri);
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Get, requestUri);
             var getResponse = await Http.SendAsync(requestMessage);
             if (getResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
@@ -222,22 +222,6 @@ else
         {
             ErrorHandleMessage = Error?.HandleError(ex);
         }
-    }
-
-    private async Task<string> GetToken()
-    {
-        AccessToken accessToken;
-        var token = await TokenProvider.RequestAccessToken();
-        token.TryGetToken(out accessToken);
-        return accessToken.Value;
-    }
-
-    private async Task<HttpRequestMessage> GetHttpRequestMessage(HttpMethod httpMethod, string requestUri)
-    {
-        var requestMessage = new HttpRequestMessage(httpMethod, requestUri);
-        System.Net.Http.Headers.AuthenticationHeaderValue? authorization = new("Bearer", await GetToken());
-        requestMessage.Headers.Authorization = authorization;
-        return requestMessage;
     }
 
     private async Task OnSubmit()

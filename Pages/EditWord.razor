@@ -10,7 +10,7 @@
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 @inject ISessionStorageService SessionStorageServices
-@inject IAccessTokenProvider TokenProvider
+@inject RequestMessageGenerator RequestMessageGenerator
 @inject Endpoint Endpoint
 
 <div>
@@ -99,7 +99,7 @@
         string requestUri = Endpoint.Url + $"/word/editword";
         try
         {
-            var requestMessage = await GetHttpRequestMessage(HttpMethod.Post, requestUri);
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Post, requestUri);
             string jsonPostRequest = JsonSerializer.Serialize(WordToSubmit);
             requestMessage.Content = new StringContent(jsonPostRequest, Encoding.UTF8, "application/json");
             var response = await Http.SendAsync(requestMessage);
@@ -131,21 +131,5 @@
         {
             ErrorHandleMessage = Error?.HandleError(ex);
         }
-    }
-
-    private async Task<string> GetToken()
-    {
-        AccessToken accessToken;
-        var token = await TokenProvider.RequestAccessToken();
-        token.TryGetToken(out accessToken);
-        return accessToken.Value;
-    }
-
-    private async Task<HttpRequestMessage> GetHttpRequestMessage(HttpMethod httpMethod, string requestUri)
-    {
-        var requestMessage = new HttpRequestMessage(httpMethod, requestUri);
-        System.Net.Http.Headers.AuthenticationHeaderValue? authorization = new("Bearer", await GetToken());
-        requestMessage.Headers.Authorization = authorization;
-        return requestMessage;
     }
 }

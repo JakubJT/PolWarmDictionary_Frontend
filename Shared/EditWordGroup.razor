@@ -9,8 +9,8 @@
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
 @inject ISessionStorageService SessionStorageServices
-@inject IAccessTokenProvider TokenProvider
 @inject Endpoint Endpoint
+@inject RequestMessageGenerator RequestMessageGenerator
 
 <div>
     @WordGroup!.Name
@@ -77,7 +77,7 @@
         string requestUri = Endpoint.Url + $"/wordgroup/editwordgroup";
         try
         {
-            var requestMessage = await GetHttpRequestMessage(HttpMethod.Post, requestUri);
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Post, requestUri);
             string jsonPostRequest = JsonSerializer.Serialize(WordGroup);
             requestMessage.Content = new StringContent(jsonPostRequest, Encoding.UTF8, "application/json");
             var response = await Http.SendAsync(requestMessage);
@@ -114,22 +114,6 @@
     public void AddWord(Word word)
     {
         WordGroup!.Words!.Add(word);
-    }
-
-    private async Task<string> GetToken()
-    {
-        AccessToken accessToken;
-        var token = await TokenProvider.RequestAccessToken();
-        token.TryGetToken(out accessToken);
-        return accessToken.Value;
-    }
-
-    private async Task<HttpRequestMessage> GetHttpRequestMessage(HttpMethod httpMethod, string requestUri)
-    {
-        var requestMessage = new HttpRequestMessage(httpMethod, requestUri);
-        System.Net.Http.Headers.AuthenticationHeaderValue? authorization = new("Bearer", await GetToken());
-        requestMessage.Headers.Authorization = authorization;
-        return requestMessage;
     }
 
     private void DeleteClick(Word word)

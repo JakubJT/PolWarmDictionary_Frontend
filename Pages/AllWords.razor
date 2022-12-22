@@ -11,7 +11,7 @@
 @inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
 @inject Sorting Sorting
-@inject IAccessTokenProvider TokenProvider
+@inject RequestMessageGenerator RequestMessageGenerator
 
 
 <PageTitle>Wszystkie słówka</PageTitle>
@@ -162,7 +162,7 @@
     {        
             string requestUri = Endpoint.Url + "/word/getwords" + $"?sortBy={sortBy}" + $"&ascendingOrder={ascendingOrder}"
                             + $"&pageNumber={pageNumber}" + $"&wordsPerPage={wordsPerPage}";
-            var requestMessage = await GetHttpRequestMessage(HttpMethod.Get, requestUri);
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Get, requestUri);
             var response = await Http.SendAsync(requestMessage);
 
             if (!response.IsSuccessStatusCode)
@@ -185,22 +185,6 @@
         await GetWords(options.SortBy, options.AscendingOrder, options.pageNumber);
     }
 
-    private async Task<string> GetToken()
-    {
-        AccessToken accessToken; 
-        var token = await TokenProvider.RequestAccessToken();
-        token.TryGetToken(out accessToken);
-        return accessToken.Value;
-    }
-
-    private async Task<HttpRequestMessage> GetHttpRequestMessage(HttpMethod httpMethod, string requestUri)
-    {
-            var requestMessage = new HttpRequestMessage(httpMethod, requestUri);            
-            System.Net.Http.Headers.AuthenticationHeaderValue? authorization = new ("Bearer", await GetToken());
-            requestMessage.Headers.Authorization = authorization;
-            return requestMessage;
-    }
-
     public async Task SortClick (string sortBy)
     {
         SortOptions = Sorting.Sort(sortBy, SortOptions);
@@ -215,7 +199,7 @@
         try
         {
             string requestUri = Endpoint.Url + $"/word/deleteword?wordId={wordToDelete!.Id}";            
-            var requestMessage = await GetHttpRequestMessage(HttpMethod.Delete, requestUri);
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Delete, requestUri);
             var deleteResponse = await Http.SendAsync(requestMessage);
             if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
