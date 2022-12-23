@@ -4,7 +4,7 @@
             <li class="page-item">
             @if (previousPage != 0)
                 {
-                    <button class="page-link" @onclick=@(async() =>
+                        <button class="page-link" @onclick=@(async() =>
                 {
                     await CurrentPageChanged.InvokeAsync(previousPage); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, previousPage));
                 }
@@ -12,33 +12,33 @@
                 }
                 else
                 {
-                    <button class="page-link invisible" disabled = true><i class="bi bi-arrow-left-circle"></i></button>
+                        <button class="page-link invisible" disabled = true><i class="bi bi-arrow-left-circle"></i></button>
                 }
             </li>
             @foreach (var pageNumber in @pageArray)
             {
-                if(pageNumber != null)
+                if (pageNumber != null)
                 {
-                    <li class="@(CurrentPage == pageNumber ? "page-item active" : "page-item")">
-                    @if (pageNumber == 0 && NumberOfPages > 1)
-                    {
-                        <button class="page-link" disabled = true>...</button>
-                    }
-                    else if (pageNumber > 0)
-                    {
-                            <button class="page-link" @onclick=@(async() =>
+                            <li class="@(CurrentPage == pageNumber ? "page-item active" : "page-item")">
+                        @if (pageNumber == 0 && NumberOfPages > 1)
+                        {
+                                    <button class="page-link" disabled = true>...</button>
+                        }
+                        else if (pageNumber > 0)
+                        {
+                                        <button class="page-link" @onclick=@(async() =>
                     {
                         await CurrentPageChanged.InvokeAsync((int)pageNumber); await GetWords.InvokeAsync((SortOptions.SortBy, SortOptions.AscendingOrder, (int)pageNumber));
                     }
                     )>@pageNumber</button>
-                    }
-                    </li>
+                        }
+                            </li>
                 }
             }
             <li class="page-item">
-                @if (nextPage != 0)
+                @if (nextPage != 0 && NumberOfPages > 1)
                 {
-                    <button class="page-link" @onclick=@(async() =>
+                        <button class="page-link" @onclick=@(async() =>
                 {
                     await CurrentPageChanged.InvokeAsync(nextPage); await GetWords.InvokeAsync(((SortOptions.SortBy, SortOptions.AscendingOrder, nextPage)));
                 }
