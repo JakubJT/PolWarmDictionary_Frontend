@@ -15,9 +15,9 @@
 
 
 <PageTitle>Twoje kolekcje słów</PageTitle>
-@if (editMode)
+@if (EditMode)
 {
-    <EditWordGroup WordGroup="WordGroupToEdit" @bind-EditMode="editMode"></EditWordGroup>
+    <EditWordGroup WordGroup="WordGroupToEdit" BackToReadMode="BackToReadMode"></EditWordGroup>
 }
 else
 {
@@ -62,7 +62,7 @@ else
                             <td>@wordGroup.Words!.Count()</td>
                             <td class="narrow">
                                 <button type="button" class="btn btn-primary btn-sm" @onclick=@(() => { WordGroupToEdit = wordGroup;
-                        editMode = true; })>Edytuj
+                        EditMode = true; })>Edytuj
                                 </button>
                             </td>
                             <td class="narrow">
@@ -83,8 +83,8 @@ else
                     grupę</button>
             </div>
             <div>
-                <button type="button" class="btn btn-primary btn-sm" @onclick=@(async () => await
-            JS.InvokeVoidAsync("history.go", -1))>Cofnij stronę</button>
+                @* <button type="button" class="btn btn-primary btn-sm" @onclick=@(async () => await
+                    JS.InvokeVoidAsync("history.go", -1))>Cofnij stronę</button> *@
             </div>
 
         }
@@ -99,28 +99,12 @@ else
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <EditForm Model="@GroupToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
-                        <DataAnnotationsValidator />
-                        <p>
-                            <label>
-                                Nazwa kolekcji:
-                                <InputText minlength=1 maxlength=16 class="form-control"
-                                @bind-Value="GroupToSubmit!.Name" />
-                            </label>
-                            <ValidationMessage For="() => GroupToSubmit.Name" />
-                        </p>
-                        <p>
-                            <label>
-                                Id słowa:
-                                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="GroupToSubmit.Id" />
-                            </label>
-                            <ValidationMessage For="() => GroupToSubmit.Id" />
-                        </p>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-                            <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Zapisz</button>
-                        </div>
-                    </EditForm>
+                    <EditWordGroup BackToReadMode="BackToReadMode"></EditWordGroup>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+                    @* <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                        @onclick="DeleteWord">Zapisz</button> *@
                 </div>
             </div>
         </div>
@@ -162,8 +146,7 @@ else
     public Error? Error { get; set; }
     private RenderFragment? ErrorHandleMessage { get; set; }
     private List<WordGroup>? wordGroups;
-    private WordGroupToSubmit GroupToSubmit { get; set; } = new();
-    private bool editMode { get; set; } = false;
+    private bool EditMode { get; set; }
     public WordGroup WordGroupToEdit { get; set; }
 
 
@@ -186,6 +169,16 @@ else
             var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/WordGroups.razor.js");
             await module.InvokeVoidAsync("showActionToast");
             SessionStorageServices.SetItem("actionSucceeded", false);
+        }
+    }
+
+    private async Task BackToReadMode(bool loadGroups)
+    {
+        EditMode = false;
+        if (loadGroups)
+        {
+            wordGroups = null;
+            await GetWordGroups();
         }
     }
 
@@ -222,12 +215,6 @@ else
         {
             ErrorHandleMessage = Error?.HandleError(ex);
         }
-    }
-
-    private async Task OnSubmit()
-    {
-        Console.WriteLine(GroupToSubmit.Name);
-        Console.WriteLine(GroupToSubmit.Id);
     }
 
     @* public async Task SortClick (string sortBy)

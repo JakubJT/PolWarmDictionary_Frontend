@@ -13,7 +13,6 @@
 @inject RequestMessageGenerator RequestMessageGenerator
 
 <div>
-    @WordGroup!.Name
     <EditForm Model="@WordGroup" OnValidSubmit="@OnSubmit" class="mb-3">
         <DataAnnotationsValidator />
         <p>
@@ -25,47 +24,50 @@
         </p>
         <p>
             <label>
-                Id słowa:
+                Id Usera:
                 <InputText disabled="true" class="form-control" @bind-Value="WordGroup.UserADId" />
             </label>
         </p>
-        @foreach (var word in WordGroup!.Words!)
+        @if (WordGroup.Words != null)
         {
-            <p>
-            <div class="word">
-                <div class="word-text">
-                    <InputText disabled="true" minlength=1 maxlength=16 class="form-control" @bind-Value="word.InPolish" />
-                </div>
-                <div class="word-text">
-                    <InputText disabled="true" minlength=1 maxlength=16 class="form-control" @bind-Value="word.InWarmian" />
-                </div>
-                <button type="button" class="btn btn-danger btn-sm word-button" @onclick=@(() =>
+            @foreach (var word in WordGroup.Words)
+            {
+                <p>
+                <div class="word">
+                    <div class="word-text">
+                        <InputText disabled="true" minlength=1 maxlength=16 class="form-control" @bind-Value="word.InPolish" />
+                    </div>
+                    <div class="word-text">
+                        <InputText disabled="true" minlength=1 maxlength=16 class="form-control" @bind-Value="word.InWarmian" />
+                    </div>
+                    <button type="button" class="btn btn-danger btn-sm word-button" @onclick=@(() =>
                 DeleteClick(word))>Usuń</button>
-            </div>
-            </p>
+                </div>
+                </p>
+            }
         }
         <div class="search">
             <Search IsRadzenBlazorStyle="true" EditGroupMode="true" AddWord=@AddWord></Search>
         </div>
+        @if (ErrorHandleMessage != null)
+        {
+            <p>@ErrorHandleMessage</p>
+        }
         <button type="button" class="btn btn-secondary" @onclick=@(() =>
-            EditModeChanged.InvokeAsync(false))>Wróć</button>
+            BackToReadMode.InvokeAsync(false))>Wróć</button>
         <button type="submit" class="btn btn-primary">Zapisz</button>
     </EditForm>
 </div>
-@if (ErrorHandleMessage != null)
-{
-    <p>@ErrorHandleMessage</p>
-}
 
 @code {
     [CascadingParameter]
     public Error? Error { get; set; }
     [Parameter]
-    public WordGroup? WordGroup { get; set; }
+    public WordGroup? WordGroup { get; set; } = new();
     [Parameter]
     public bool EditMode { get; set; }
     [Parameter]
-    public EventCallback<bool> EditModeChanged { get; set; }
+    public EventCallback<bool> BackToReadMode { get; set; }
     private RenderFragment? ErrorHandleMessage { get; set; }
 
     protected override async Task OnInitializedAsync()
@@ -97,13 +99,13 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Edycja kolekcji słów się nie powiodła - <em>@response.StatusCode</em></p>
+                        <p>Uwtworzenie/Edycja kolekcji słów się nie powiodła - <em>@response.StatusCode</em></p>
                     </div>
                 };
                 return;
             }
             SessionStorageServices.SetItem("actionSucceeded", true);
-            await EditModeChanged.InvokeAsync(false);
+            await BackToReadMode.InvokeAsync(true);
         }
         catch (Exception ex)
         {
@@ -113,7 +115,18 @@
 
     public void AddWord(Word word)
     {
-        WordGroup!.Words!.Add(word);
+        ErrorHandleMessage = null;
+
+        if (WordGroup!.Words!.Exists(w => w.Id == word.Id))
+        {
+            ErrorHandleMessage = __builder =>
+            {
+                <div class="alert alert-warning" role="alert">
+                    <p>Słowo <em>@word.InPolish/@word.InWarmian/@word.PartOfSpeech</em> znajduje się już w kolekcji.</p>
+                </div>
+            };
+        }
+        else WordGroup!.Words!.Add(word);
     }
 
     private void DeleteClick(Word word)

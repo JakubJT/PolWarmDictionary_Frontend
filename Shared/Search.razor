@@ -10,11 +10,11 @@
         <button type="button" class="btn btn-primary" @onclick="ChangeLanguage">Zmień język</button>
         @if (PolishToWarmianTranslation)
         {
-            <span> Polski <span class="oi oi-arrow-right" aria-hidden="true"></span> Warmiński</span>
+                <span> Polski <span class="oi oi-arrow-right" aria-hidden="true"></span> Warmiński</span>
         }
         else
         {
-            <span> Warmiński <span class="oi oi-arrow-right" aria-hidden="true"></span> Polski</span>
+                <span> Warmiński <span class="oi oi-arrow-right" aria-hidden="true"></span> Polski</span>
         }
     </p>
 </div>
@@ -22,15 +22,15 @@
 <div>
     @if (IsRadzenBlazorStyle)
     {
-        <form @onsubmit="OnSubmit">
-            <p>
-                <RadzenTextBox Placeholder="Szukaj..." @bind-Value="TextValue" Class="w-100" MaxLength=15 />
-            </p>
+            <form @onsubmit="OnSubmit" >
+                <p>
+                    <RadzenTextBox Placeholder="Szukaj..." @bind-Value="TextValue" Class="w-100" MaxLength=15 />
+                </p>
             @if (Result != null)
             {
-                <p>
+                <p class=@(@EditGroupMode ? "pointer" :"")>
                     <RadzenDataGrid TItem="Word" Data="@Result" SelectionMode="DataGridSelectionMode.Single"
-                @bind-Value=@selectedWord>
+                    @bind-Value=@selectedWord>
                         <Columns>
                             @if (PolishToWarmianTranslation)
                             {
@@ -49,19 +49,19 @@
                 </p>
                 @if (EditGroupMode)
                 {
-                    <button type="button" class="btn btn-primary btn-sm" @onclick=@(()=> { if(selectedWord !=null)
-            AddWord.InvokeAsync(selectedWord.FirstOrDefault());})>Dodaj
+                    <button type="button" class="btn btn-primary btn-sm button-add @isDisabled" @onclick=@(()=> { if(selectedWord !=null)
+                        AddWord.InvokeAsync(selectedWord.FirstOrDefault());})>Dodaj
                     </button>
                 }
             }
-        </form>
+            </form>
     }
     else
     {
-        <form @onsubmit="OnSubmit">
-            <MudTextField @bind-Value="TextValue" Label="Szukaj" Variant="MudBlazor.Variant.Outlined" MaxLength=15
+            <form @onsubmit="OnSubmit">
+                <MudTextField @bind-Value="TextValue" Label="Szukaj" Variant="MudBlazor.Variant.Outlined" MaxLength=15
             Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" OnAdornmentClick="OnSubmit">
-            </MudTextField>
+                </MudTextField>
             @if (Result != null)
             {
                 <p>
@@ -73,15 +73,15 @@
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel=@(PolishToWarmianTranslation ? "Polish" : "Warmian")>@(PolishToWarmianTranslation ?
-                        @context.InPolish : @context.InWarmian)</MudTd>
+                @context.InPolish : @context.InWarmian)</MudTd>
                             <MudTd DataLabel=@(PolishToWarmianTranslation ? "Warmian" : "Polish")>@(PolishToWarmianTranslation ?
-                        @context.InWarmian : @context.InPolish)</MudTd>
+                @context.InWarmian : @context.InPolish)</MudTd>
                             <MudTd DataLabel=PartOfSpeech>@context.PartOfSpeech</MudTd>
                         </RowTemplate>
                     </MudTable>
                 </p>
             }
-        </form>
+            </form>
     }
     @if (ErrorHandleMessage != null)
     {
@@ -102,8 +102,15 @@
     private string? TextValue { get; set; }
     private bool PolishToWarmianTranslation { get; set; } = true;
     private List<Word>? Result { get; set; }
-    private IList<Word> selectedWord;
+    private IList<Word>? selectedWord;
     private RenderFragment? ErrorHandleMessage { get; set; }
+    private string? isDisabled
+    {
+        get
+        {
+            return selectedWord == null ? "disabled" : "";
+        }
+    }
 
     public void ChangeLanguage()
     {
@@ -157,7 +164,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                        Brak słowa "@TextValue" w bazie danych
+                      Brak słowa "@TextValue" w bazie danych
                     </div>
 
                 };
@@ -182,6 +189,7 @@
             var reponseData = await response.Content.ReadFromJsonAsync<List<Word>>();
             Result = reponseData;
 
+            if (EditGroupMode) return;
             SessionStorageServices.SetItem("result", Result);
             SessionStorageServices.SetItem("word", TextValue);
         }

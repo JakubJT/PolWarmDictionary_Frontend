@@ -64,6 +64,11 @@
     private int nextPage { get; set; }
     private int?[] pageArray { get; set; } = new int?[7];
 
+    protected override void OnInitialized()
+    {
+        Paginate();
+    }
+
     public void Paginate()
     {
         if (NumberOfPages <= 7)

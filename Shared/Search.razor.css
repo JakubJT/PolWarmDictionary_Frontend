@@ -4,5 +4,12 @@ p {
 
 button {
     margin-right: 0.5rem;
+}
 
+.button-add {
+    margin-bottom: 0.5rem;
+}
+
+.pointer ::deep .rz-data-row {
+    cursor: pointer;
 }

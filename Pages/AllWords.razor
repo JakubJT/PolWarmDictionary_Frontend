@@ -123,15 +123,7 @@
     private int numberOfPages;
     private int wordsPerPage {get;set;} = 10;
     private Word? wordToDelete;
-    private Pagination? paginationComponent {
-        get { return _paginationComponent; } 
-        set
-        {
-            _paginationComponent = value;
-            _paginationComponent!.Paginate();
-        }}
-    private Pagination? _paginationComponent; 
-
+    private Pagination? paginationComponent;
     private (string SortBy, bool AscendingOrder) SortOptions = ("InPolish", true); 
     private int currentPage {get;set;} = 1;
 
