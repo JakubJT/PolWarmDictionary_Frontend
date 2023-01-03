@@ -66,8 +66,8 @@ else
                                 </button>
                             </td>
                             <td class="narrow">
-                                @* <button type="button" class="btn btn-danger btn-sm" @onclick=@(() =>
-                                    DeleteClick(word)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button> *@
+                                <button type="button" class="btn btn-danger btn-sm" @onclick=@(() =>
+                                    DeleteClick(wordGroup)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button>
                             </td>
                         </tr>
                     }
@@ -122,23 +122,23 @@ else
     </div>
 </div>
 
-@* <div class="modal fade" id="deleteWordModal" tabindex="-1" aria-labelledby="deleteWordModalLabel" aria-hidden="true">
+<div class="modal fade" id="deleteWordModal" tabindex="-1" aria-labelledby="deleteWordModalLabel" aria-hidden="true">
     <div class="modal-dialog">
-    <div class="modal-content">
-    <div class="modal-header">
-    <h5 class="modal-title" id="deleteWordModalLabel">Usuwanie słowa</h5>
-    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteWordModalLabel">Usuwanie słowa</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Na pewno chcesz usunąć kolekcję <em>@wordGroupToDelete?.Name</em>?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="DeleteWord">Tak</button>
+            </div>
+        </div>
     </div>
-    <div class="modal-body">
-    <p>Na pewno chcesz usunąć słowo <em>@wordToDelete?.InPolish</em>?</p>
-    </div>
-    <div class="modal-footer">
-    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
-    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="DeleteWord">Tak</button>
-    </div>
-    </div>
-    </div>
-    </div> *@
+</div>
 
 
 @code {
@@ -147,7 +147,8 @@ else
     private RenderFragment? ErrorHandleMessage { get; set; }
     private List<WordGroup>? wordGroups;
     private bool EditMode { get; set; }
-    public WordGroup WordGroupToEdit { get; set; }
+    public WordGroup? WordGroupToEdit { get; set; }
+    private WordGroup? wordGroupToDelete;
 
 
     protected override async Task OnInitializedAsync()
@@ -221,42 +222,43 @@ else
         {
         SortOptions = Sorting.Sort(sortBy, SortOptions);
         await GetWords(SortOptions.SortBy, SortOptions.AscendingOrder, currentPage);
-        }
-        public void DeleteClick(Word word)
+        } *@
+        public void DeleteClick(WordGroup wordGroup)
         {
-        wordToDelete = word;
+            wordGroupToDelete = wordGroup;
         }
+
         public async Task DeleteWord()
         {
-        try
-        {
-        string requestUri = Endpoint.Url + $"/DeleteWord?wordId={wordToDelete!.Id}";
-        var requestMessage = await GetHttpRequestMessage(HttpMethod.Delete, requestUri);
-        var deleteResponse = await Http.SendAsync(requestMessage);
-        if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
-        {
-        ErrorHandleMessage = __builder =>
-        {
-        <div class="alert alert-warning" role="alert">
-        Nie znaleziono słowa "@wordToDelete.InPolish" w bazie danych
-        </div>
-        };
+            try
+            {
+                string requestUri = Endpoint.Url + $"/wordgroup/deletewordgroup?wordGroupId={wordGroupToDelete!.WordGroupId}";
+                var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Delete, requestUri);
+                var deleteResponse = await Http.SendAsync(requestMessage);
+                if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                {
+                    ErrorHandleMessage = __builder =>
+                    {
+                        <div class="alert alert-warning" role="alert">
+                        Nie znaleziono kolekcji "@wordGroupToDelete.Name" w bazie danych
+                        </div>
+                    };
+                }
+                else if (!deleteResponse.IsSuccessStatusCode)
+                {
+                    ErrorHandleMessage = __builder =>
+                    {
+                        <div class="alert alert-warning" role="alert">
+                        Usunięcie kolekcje się nie powiodło - <em>{response.StatusCode}</em>
+                        </div>
+                    };
+                    return;
+                }
+                await GetWordGroups();
+            }
+            catch(Exception ex)
+            {
+                ErrorHandleMessage = Error?.HandleError(ex);
+            }
         }
-        else if (!deleteResponse.IsSuccessStatusCode)
-        {
-        ErrorHandleMessage = __builder =>
-        {
-        <div class="alert alert-warning" role="alert">
-        Usunięcie słowa się nie powiodło - <em>{response.StatusCode}</em>
-        </div>
-        };
-        return;
-        }
-        await GetWords("InPolish", true);
-        }
-        catch(Exception ex)
-        {
-        ErrorHandleMessage = Error?.HandleError(ex);
-        }
-        } *@
 }
