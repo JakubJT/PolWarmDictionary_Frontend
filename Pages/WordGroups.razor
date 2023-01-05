@@ -78,8 +78,8 @@ else
                 @ref="paginationComponent" SortOptions="@SortOptions" NumberOfPages="@numberOfPages"></Pagination>
                 </div> *@
             <div>
-                <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-            data-bs-target="#exampleModal">Utwórz nową
+                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
+                        data-bs-target="#createCollectionModal">Utwórz nową
                     grupę</button>
             </div>
             <div>
@@ -91,20 +91,15 @@ else
     </div>
 
 
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
+    <div class="modal fade" id="createCollectionModal" tabindex="-1" aria-labelledby="createCollectionModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">Nowa kolekcja</h5>
+                    <h5 class="modal-title" id="createCollectionModalLabel">Nowa kolekcja</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <EditWordGroup BackToReadMode="BackToReadMode"></EditWordGroup>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-                    @* <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
-                        @onclick="DeleteWord">Zapisz</button> *@
+                    <EditWordGroup CreateForm="true" BackToReadMode="BackToReadMode"></EditWordGroup>
                 </div>
             </div>
         </div>
@@ -169,6 +164,7 @@ else
         {
             var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/WordGroups.razor.js");
             await module.InvokeVoidAsync("showActionToast");
+            if (module is not null) await module.DisposeAsync();
             SessionStorageServices.SetItem("actionSucceeded", false);
         }
     }

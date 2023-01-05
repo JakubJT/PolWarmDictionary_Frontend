@@ -146,6 +146,7 @@
         {
             var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/AllWords.razor.js");
             await module.InvokeVoidAsync("showActionToast");
+            if (module is not null) await module.DisposeAsync();
             SessionStorageServices.SetItem("actionSucceeded", false);
         }   
     }

@@ -8,6 +8,7 @@
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
+@inject IJSRuntime JS
 @inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
 @inject RequestMessageGenerator RequestMessageGenerator
@@ -28,6 +29,7 @@
                 <InputText disabled="true" class="form-control" @bind-Value="WordGroup.UserADId" />
             </label>
         </p>
+        Słowa:
         @if (WordGroup.Words != null)
         {
             @foreach (var word in WordGroup.Words)
@@ -53,9 +55,17 @@
         {
             <p>@ErrorHandleMessage</p>
         }
-        <button type="button" class="btn btn-secondary" @onclick=@(() =>
+        @if (CreateForm)
+        {
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
+            <button type="submit" class="btn btn-primary">Utwórz</button>
+        }
+        else
+        {
+            <button type="button" class="btn btn-secondary" @onclick=@(() =>
             BackToReadMode.InvokeAsync(false))>Wróć</button>
-        <button type="submit" class="btn btn-primary">Zapisz</button>
+            <button type="submit" class="btn btn-primary">Zapisz</button>
+        }
     </EditForm>
 </div>
 
@@ -65,18 +75,22 @@
     [Parameter]
     public WordGroup? WordGroup { get; set; } = new();
     [Parameter]
-    public bool EditMode { get; set; }
+    public bool CreateForm { get; set; } = false;
     [Parameter]
     public EventCallback<bool> BackToReadMode { get; set; }
     private RenderFragment? ErrorHandleMessage { get; set; }
 
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
+        if (CreateForm) WordGroup!.Words = new();
     }
 
     public async Task OnSubmit()
     {
-        string requestUri = Endpoint.Url + $"/wordgroup/editwordgroup";
+        string requestUri;
+        if (CreateForm) requestUri = Endpoint.Url + $"/wordgroup/createwordgroup";
+        else requestUri = Endpoint.Url + $"/wordgroup/editwordgroup";
+
         try
         {
             var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Post, requestUri);
@@ -99,12 +113,21 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Uwtworzenie/Edycja kolekcji słów się nie powiodła - <em>@response.StatusCode</em></p>
+                        <p>Utworzenie/Edycja kolekcji słów się nie powiodła - <em>@response.StatusCode</em></p>
                     </div>
                 };
                 return;
             }
             SessionStorageServices.SetItem("actionSucceeded", true);
+            if (CreateForm)
+            {
+                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Shared/EditWordGroup.razor.js");
+                await module.InvokeVoidAsync("hideModal");
+                if (module is not null) await module.DisposeAsync();
+            }
+            WordGroup = new();
+            WordGroup.Words = new();
+            ErrorHandleMessage = null;
             await BackToReadMode.InvokeAsync(true);
         }
         catch (Exception ex)
