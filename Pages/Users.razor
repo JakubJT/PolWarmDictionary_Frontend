@@ -1,0 +1,109 @@
+@page "/users"
+@using System.Net.Http
+@using Microsoft.AspNetCore.Authorization
+@using Models
+@attribute [Authorize]
+@inject HttpClient Http
+@inject IConfiguration Configuration
+@inject NavigationManager NavigationManager
+@inject IJSRuntime JS
+@inject ISessionStorageService SessionStorageServices
+@inject Endpoint Endpoint
+@inject Sorting Sorting
+@inject RequestMessageGenerator RequestMessageGenerator
+
+
+<PageTitle>Użytkownicy</PageTitle>
+
+<h1>Wszyscy aktywni użytkownicy słownika</h1>
+<div>
+    @if (users == null)
+    {
+        if (ErrorHandleMessage != null)
+        {
+            @ErrorHandleMessage
+        }
+        else
+        {
+            <p><em>Wczytywanie...</em></p>
+            <div class="spinner-border text-primary" role="status">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="card-container">
+            @foreach (var user in users)
+            {
+                <RadzenCard class="m-3 rz-shadow-5">
+                    <h3 class="h5">Użytkownik</h3>
+                    <div class="d-flex flex-row">
+                        <div>
+                            <div>Imię i nazwisko</div>
+                            <b>@user.Name</b>
+                            <div>E-mail</div>
+                            <b>@(user.Email == null ? "brak" : user.Email)</b>
+                            <div class="mt-3">Ilość kolekcji słów</div>
+                            <b>@user.NumberOfWordGroups</b>
+                        </div>
+                    </div>
+                </RadzenCard>
+            }
+        </div>
+    }
+</div>
+
+@code {
+    [CascadingParameter]
+    public Error? Error { get; set; }
+    private RenderFragment? ErrorHandleMessage { get; set; }
+    private List<User>? users;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            await GetUsers();
+        }
+        catch (Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+
+    private async Task GetUsers()
+    {
+        try
+        {
+            string requestUri = Endpoint.Url + $"/user/getallusers";
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Get, requestUri);
+            var getResponse = await Http.SendAsync(requestMessage);
+            if (getResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Nie ma jeszcze żadnych aktywnych użytkowników
+                    </div>
+                };
+            }
+            else if (!getResponse.IsSuccessStatusCode)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                        Pobranie użytkowników się nie powiodło - <em>{getResponse.StatusCode}</em>
+                    </div>
+                };
+                return;
+            }
+
+            users = await getResponse.Content.ReadFromJsonAsync<List<User>>();
+        }
+        catch (Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+}

@@ -1,7 +1,6 @@
 @using System.Net.Http
 @using Models
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using System.Text.Json
 @using System.Text
 @attribute [Authorize]
@@ -22,12 +21,6 @@
                 <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordGroup!.Name" />
             </label>
             <ValidationMessage For="() => WordGroup.Name" />
-        </p>
-        <p>
-            <label>
-                Id Usera:
-                <InputText disabled="true" class="form-control" @bind-Value="WordGroup.UserADId" />
-            </label>
         </p>
         Słowa:
         @if (WordGroup.Words != null)
@@ -119,12 +112,7 @@
                 return;
             }
             SessionStorageServices.SetItem("actionSucceeded", true);
-            if (CreateForm)
-            {
-                var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Shared/EditWordGroup.razor.js");
-                await module.InvokeVoidAsync("hideModal");
-                if (module is not null) await module.DisposeAsync();
-            }
+
             WordGroup = new();
             WordGroup.Words = new();
             ErrorHandleMessage = null;

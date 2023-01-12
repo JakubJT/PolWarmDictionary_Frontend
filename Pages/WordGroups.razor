@@ -1,7 +1,6 @@
 @page "/wordgroups"
 @using System.Net.Http
 @using Microsoft.AspNetCore.Authorization
-@using Microsoft.AspNetCore.Components.WebAssembly.Authentication
 @using Models
 @attribute [Authorize]
 @inject HttpClient Http
@@ -22,7 +21,7 @@
 else
 {
     <h1>Wszystkie słowa ze słownika</h1>
-    <div class="wrapper">
+    <div>
         @if (wordGroups == null)
         {
             if (ErrorHandleMessage != null)
@@ -73,20 +72,10 @@ else
                     }
                 </tbody>
             </table>
-            @* <div>
-                <Pagination GetWords="@GetWords" @bind-CurrentPage="currentPage"
-                @ref="paginationComponent" SortOptions="@SortOptions" NumberOfPages="@numberOfPages"></Pagination>
-                </div> *@
             <div>
-                    <button type="button" class="btn btn-primary btn-sm" data-bs-toggle="modal"
-                        data-bs-target="#createCollectionModal">Utwórz nową
-                    grupę</button>
+                <button type="button" class="btn btn-primary btn-sm" @onclick="ShowModal">Utwórz nową
+                grupę</button>
             </div>
-            <div>
-                @* <button type="button" class="btn btn-primary btn-sm" @onclick=@(async () => await
-                    JS.InvokeVoidAsync("history.go", -1))>Cofnij stronę</button> *@
-            </div>
-
         }
     </div>
 
@@ -144,6 +133,7 @@ else
     private bool EditMode { get; set; }
     public WordGroup? WordGroupToEdit { get; set; }
     private WordGroup? wordGroupToDelete;
+    private bool isModalShowed = false;
 
 
     protected override async Task OnInitializedAsync()
@@ -171,6 +161,7 @@ else
 
     private async Task BackToReadMode(bool loadGroups)
     {
+        if (isModalShowed) await HideModal();
         EditMode = false;
         if (loadGroups)
         {
@@ -179,6 +170,22 @@ else
         }
     }
 
+    private async Task ShowModal()
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/WordGroups.razor.js");
+        await module.InvokeVoidAsync("showModal");
+        if (module is not null) await module.DisposeAsync();
+        isModalShowed = true;
+    }
+
+    private async Task HideModal()
+    {
+        var module = await JS.InvokeAsync<IJSObjectReference>("import", "./Pages/WordGroups.razor.js");
+        await module.InvokeVoidAsync("hideModal");
+        if (module is not null) await module.DisposeAsync();
+        isModalShowed = false;
+    }
+    
     private async Task GetWordGroups()
     {
         try
@@ -214,47 +221,42 @@ else
         }
     }
 
-    @* public async Task SortClick (string sortBy)
-        {
-        SortOptions = Sorting.Sort(sortBy, SortOptions);
-        await GetWords(SortOptions.SortBy, SortOptions.AscendingOrder, currentPage);
-        } *@
-        public void DeleteClick(WordGroup wordGroup)
-        {
-            wordGroupToDelete = wordGroup;
-        }
+    public void DeleteClick(WordGroup wordGroup)
+    {
+        wordGroupToDelete = wordGroup;
+    }
 
-        public async Task DeleteWord()
+    public async Task DeleteWord()
+    {
+        try
         {
-            try
+            string requestUri = Endpoint.Url + $"/wordgroup/deletewordgroup?wordGroupId={wordGroupToDelete!.WordGroupId}";
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Delete, requestUri);
+            var deleteResponse = await Http.SendAsync(requestMessage);
+            if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                string requestUri = Endpoint.Url + $"/wordgroup/deletewordgroup?wordGroupId={wordGroupToDelete!.WordGroupId}";
-                var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Delete, requestUri);
-                var deleteResponse = await Http.SendAsync(requestMessage);
-                if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+                ErrorHandleMessage = __builder =>
                 {
-                    ErrorHandleMessage = __builder =>
-                    {
-                        <div class="alert alert-warning" role="alert">
-                        Nie znaleziono kolekcji "@wordGroupToDelete.Name" w bazie danych
-                        </div>
-                    };
-                }
-                else if (!deleteResponse.IsSuccessStatusCode)
-                {
-                    ErrorHandleMessage = __builder =>
-                    {
-                        <div class="alert alert-warning" role="alert">
-                        Usunięcie kolekcje się nie powiodło - <em>{response.StatusCode}</em>
-                        </div>
-                    };
-                    return;
-                }
-                await GetWordGroups();
+                    <div class="alert alert-warning" role="alert">
+                    Nie znaleziono kolekcji "@wordGroupToDelete.Name" w bazie danych
+                    </div>
+                };
             }
-            catch(Exception ex)
+            else if (!deleteResponse.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = Error?.HandleError(ex);
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-warning" role="alert">
+                    Usunięcie kolekcje się nie powiodło - <em>{response.StatusCode}</em>
+                    </div>
+                };
+                return;
             }
+            await GetWordGroups();
         }
+        catch(Exception ex)
+        {
+            ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
 }
