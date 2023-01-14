@@ -3,6 +3,7 @@
 @using Microsoft.AspNetCore.Authorization
 @using Models
 @attribute [Authorize]
+@inject ILogger<Error> Logger
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
@@ -65,8 +66,8 @@ else
                                 </button>
                             </td>
                             <td class="narrow">
-                                <button type="button" class="btn btn-danger btn-sm" @onclick=@(() =>
-                                    DeleteClick(wordGroup)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button>
+                                <button type="button" class="btn btn-danger btn-sm" @onclick=@(() => DeleteClick(wordGroup))
+                        data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button>
                             </td>
                         </tr>
                     }
@@ -74,13 +75,14 @@ else
             </table>
             <div>
                 <button type="button" class="btn btn-primary btn-sm" @onclick="ShowModal">Utwórz nową
-                grupę</button>
+                    grupę</button>
             </div>
         }
     </div>
 
 
-    <div class="modal fade" id="createCollectionModal" tabindex="-1" aria-labelledby="createCollectionModalLabel" aria-hidden="true">
+    <div class="modal fade" id="createCollectionModal" tabindex="-1" aria-labelledby="createCollectionModalLabel"
+    aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
@@ -185,7 +187,7 @@ else
         if (module is not null) await module.DisposeAsync();
         isModalShowed = false;
     }
-    
+
     private async Task GetWordGroups()
     {
         try
@@ -193,14 +195,19 @@ else
             string requestUri = Endpoint.Url + $"/wordgroup/getallwordgroups";
             var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Get, requestUri);
             var getResponse = await Http.SendAsync(requestMessage);
-            if (getResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
+            if (getResponse.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
                 ErrorHandleMessage = __builder =>
                 {
-                    <div class="alert alert-warning" role="alert">
+                    <div class="alert alert-secondary" role="alert">
                         Nie masz jeszcze utworzonych żadnych kolekcji słów
                     </div>
+                    <div>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="ShowModal">Utwórz nową
+                            grupę</button>
+                    </div>
                 };
+                return;
             }
             else if (!getResponse.IsSuccessStatusCode)
             {
@@ -238,23 +245,25 @@ else
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                    Nie znaleziono kolekcji "@wordGroupToDelete.Name" w bazie danych
+                        Nie znaleziono kolekcji "@wordGroupToDelete.Name" w bazie danych
                     </div>
                 };
+                Logger.LogError("DeleteWordGroup request returned status code: " + deleteResponse.StatusCode.ToString());
+                return;
             }
             else if (!deleteResponse.IsSuccessStatusCode)
             {
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                    Usunięcie kolekcje się nie powiodło - <em>{response.StatusCode}</em>
+                        Usunięcie kolekcje się nie powiodło - <em>{response.StatusCode}</em>
                     </div>
                 };
                 return;
             }
             await GetWordGroups();
         }
-        catch(Exception ex)
+        catch (Exception ex)
         {
             ErrorHandleMessage = Error?.HandleError(ex);
         }

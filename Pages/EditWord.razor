@@ -5,6 +5,7 @@
 @using System.Text.Json
 @using System.Text
 @attribute [Authorize]
+@inject ILogger<Error> Logger
 @inject HttpClient Http
 @inject IConfiguration Configuration
 @inject NavigationManager NavigationManager
@@ -74,6 +75,7 @@
                         <p>Nie znaleziono słowa w bazie danych</p>
                     </div>
                 };
+                Logger.LogError("GetWordById request returned status code: " + response.StatusCode.ToString());
                 return;
             }
             else if (!response.IsSuccessStatusCode)
@@ -109,6 +111,17 @@
                 {
                     <div class="alert alert-warning" role="alert">
                         <p>Nie znaleziono słowa w bazie danych</p>
+                    </div>
+                };
+                Logger.LogError("EditWord request returned status code: " + response.StatusCode.ToString());
+                return;
+            }
+            else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
+            {
+                ErrorHandleMessage = __builder =>
+                {
+                    <div class="alert alert-secondary" role="alert">
+                        <p><em>@WordToSubmit!.InPolish/@WordToSubmit.InWarmian/@WordToSubmit.PartOfSpeech</em> istnieje już bazie danych</p>
                     </div>
                 };
                 return;
