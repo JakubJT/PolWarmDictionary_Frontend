@@ -1,9 +1,6 @@
 @page "/createword"
 @using System.Net.Http
 @using Microsoft.AspNetCore.Authorization
-@using System.Text
-@using System.Text.Json
-@using Models
 @attribute [Authorize]
 @inject HttpClient Http
 @inject IConfiguration Configuration
@@ -12,88 +9,9 @@
 @inject RequestMessageGenerator RequestMessageGenerator
 @inject Endpoint Endpoint
 
-<div>
-    <EditForm Model="@WordToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
-        <DataAnnotationsValidator />
-        <p>
-            <label>
-                Po polsku:
-                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit!.InPolish" />
-            </label>
-            <ValidationMessage For="() => WordToSubmit.InPolish" />
-        </p>
-        <p>
-            <label>
-                Po warmińsku
-                <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit.InWarmian" />
-            </label>
-            <ValidationMessage For="() => WordToSubmit.InWarmian" />
-        </p>
-        <p>
-            <label>
-                Część mowy
-                <InputSelect @bind-Value="WordToSubmit.PartOfSpeechId" class="form-select">
-                    <option value="">Wybierz część mowy...</option>
-                    <option value="1">Rzeczownik</option>
-                    <option value="2">Czasownik</option>
-                    <option value="4">Przymiotnik</option>
-                    <option value="5">Przysłówek</option>
-                    <option value="3">Liczebnik</option>
-                    <option value="6">Zaimek</option>
-                    <option value="7">Inna</option>
-                </InputSelect>
-            </label>
-            <ValidationMessage For="() => WordToSubmit.PartOfSpeechId" />
-        </p>
-        <button type="submit" class="btn btn-primary">Zapisz</button>
-    </EditForm>
-</div>
-@if (ErrorHandleMessage != null)
-{
-    @ErrorHandleMessage
-}
+<EditCreateForm></EditCreateForm>
 
 @code {
     [CascadingParameter]
     public Error? Error { get; set; }
-    private Word? WordToSubmit { get; set; } = new();
-    private RenderFragment? ErrorHandleMessage { get; set; }
-    public async Task OnSubmit()
-    {
-        string requestUri = Endpoint.Url + $"/word/createword";
-        try
-        {
-            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Post, requestUri);
-            string jsonPostRequest = JsonSerializer.Serialize(WordToSubmit);
-            requestMessage.Content = new StringContent(jsonPostRequest, Encoding.UTF8, "application/json");
-            var response = await Http.SendAsync(requestMessage);
-
-            if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
-            {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-secondary" role="alert">
-                        <p><em>@WordToSubmit!.InPolish/@WordToSubmit.InWarmian/@WordToSubmit.PartOfSpeech</em> istnieje już bazie danych</p>
-                    </div>
-                };
-                return;
-            }
-            else if (!response.IsSuccessStatusCode)
-            {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        <p>Stworzenie słowa się nie powiodło - <em>@response.StatusCode</em></p>
-                    </div>
-                };
-                return;
-            }
-            SessionStorageServices.SetItem("actionSucceeded", true);
-            NavigationManager.NavigateTo("allwords", true);
-        }
-        catch (Exception ex)
-        {
-            ErrorHandleMessage = Error?.HandleError(ex);
-        }
-    }
 }
