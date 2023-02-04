@@ -1,17 +1,20 @@
 ﻿@using Microsoft.AspNetCore.Components.Authorization
 @using Microsoft.AspNetCore.Components.WebAssembly.Authentication
-
 @inject NavigationManager Navigation
 @inject SignOutSessionStateManager SignOutManager
+@inject IStringLocalizer<Localization.Localization> Loc
 
 <AuthorizeView>
     <Authorized>
-        Witaj, @context.User.Identity?.Name!
-        <button class="nav-link btn btn-link" @onclick="BeginLogout">Wyloguj się</button>
+        <div class="display-elements">
+            <div class="greeting">@Loc["LoginDisplayGreeting"]@context.User.Identity?.Name!</div>
+            <button class="nav-link btn btn-link" @onclick="BeginLogout">@Loc["LoginDisplayLogin"]</button>
+        </div>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">Zaloguj się</a>
+        <a href="authentication/login">@Loc["LoginDisplayLogout"]</a>
     </NotAuthorized>
+
 </AuthorizeView>
 
 @code {

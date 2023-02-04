@@ -1,5 +1,6 @@
 @using Microsoft.Extensions.Logging
 @inject ILogger<Error> Logger
+@inject IStringLocalizer<Localization.Localization> Loc
 
 <CascadingValue Value="this">
     @ChildContent
@@ -8,9 +9,11 @@
 @code {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-    private const string ErrorMessage = "Coś poszło nie tak: ";
+    private string? ErrorMessage { get; set; }
     public RenderFragment HandleError(Exception ex)
     {
+        ErrorMessage = Loc["ErrorDefaultError"];
+
         Logger.LogError(ex, "Error");
         ChildContent = __builder =>
         {

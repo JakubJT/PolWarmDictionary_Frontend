@@ -1,36 +1,312 @@
 ﻿@page "/"
+@inject IStringLocalizer<Localization.Localization> Loc
 @inject ISessionStorageService SessionStorageServices
+@using System.Globalization
 
-<PageTitle>Słownik Polsko-Warmiński - Strona Główna</PageTitle>
-<h1>Witajcie w słowniku warmińsko-polskim/polsko-warmińskim!</h1>
+<PageTitle>@Loc["IndexPageTitle"]</PageTitle>
+<HeadContent>
+    <meta name="description" content="@Loc["IndexDescription"]">
+</HeadContent>
+
+<h1>@Loc["IndexHeading"]</h1>
 
 <div class="style-changer">
-    <p><button type="button" class="btn btn-secondary btn-sm" @onclick="ChangeSearchBarStyle">Zmień styl search
-            bara</button></p>
+    <p><button type="button" class="btn btn-secondary btn-sm"
+            @onclick="ChangeSearchBarStyle">@Loc["IndexChangeStyleButton"]</button></p>
     <p><span>@(IsRadzenBlazorStyle ? "Radzen.Blazor" : "Mud Blazor")</span></p>
 </div>
-<div class="wrapper">
-    <div class="search-bar">
-        <Search IsRadzenBlazorStyle=@IsRadzenBlazorStyle></Search>
+<div id="search-and-readme">
+    <div class="wrapper">
+        <div class="search-bar">
+            <Search IsRadzenBlazorStyle=@IsRadzenBlazorStyle></Search>
+        </div>
+        <div class="alert alert-info temporary" role="alert">
+            <p>
+                @Loc["IndexUserInfo1"]<strong>user1@polwarmdictionary.onmicrosoft.com</strong>@Loc["IndexUserInfo2"]<strong>ADTestowy1!!</strong>.
+            </p>
+            <p>
+                @Loc["IndexAdminInfo1"]<strong>admintestowy@polwarmdictionary.onmicrosoft.com</strong>@Loc["IndexAdminInfo2"]<strong>ADTestowy1!!</strong>.
+            </p>
+        </div>
     </div>
-    <div class="alert alert-info temporary" role="alert">
-        <p>
-            Żeby uzyskać dostęp do strony "Wszystkie słowa" i "Twoje
-            kolekcje słów" podaj login:
-            <strong>"user1@polwarmdictionary.onmicrosoft.com"</strong>
-            oraz hasło: <strong>"ADTestowy1!!"</strong>.
-        </p>
-        <p>
-            Żeby zalogwać się jako administrator i uzyskać dodatkowo
-            dostęp do zawartości strony "Użytkownicy" podaj login:
-            <strong>"admintestowy@polwarmdictionary.onmicrosoft.com"</strong> i hasło:
-            <strong>"ADTestowy1!!"</strong>.
-        </p>
+    <div id="readme">
+        <p class="readme-title">Readme</p>
+        @if (CultureInfo.CurrentCulture.Name == "pl")
+        {
+            <p><strong><em>Aplikacja nie jest jeszcze gotowym projektem!</em></strong></p>
+
+            <p>Frontend do słownika warmińsko-polskiego/polsko-warmińskiego napisany w Blazor WebAssembly i działający w
+                oparciu o Web API z repozytorium: https://github.com/JakubJT/PolWarmDictionary_Backend.</p>
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Użyte technologie, rozwiązania:
+                </span>
+                <ul>
+                    <li>aplikacja frontendowa w technologii Blazor WebAssembly,</li>
+                    <li>gotowe zestawy darmowych komponentów napisanych dla Blazora : Mud Blazor i Radzen Blazor,</li>
+                    <li>użycie komponentów napisanych dla aplikacji/stron działających w HTML i JS: Bootstrap,</li>
+                    <li>Autentykacja/Autoryzacja przez Azure Active Directory,</li>
+                    <li>uruchamianie kodu java scriptowego z poziomu kodu C#,</li>
+                    <li>Dependency Injection,</li>
+                    <li>obsługa błędów przez wspólny komponent Error,</li>
+                    <li>biblioteka Blazor.SessionStorage.WebAssembly w celu korzystania z session storage,</li>
+                    <li>lokalizacja; dostępna jest angielska i polska wersja słownika.</li>
+                </ul>
+            </div>
+
+            <p class="readme-subtitle readme-functions">Funkcjonalności w rozbiciu na poszczególne strony dostępne w
+                aplikacji.
+            </p>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Szukaj (Strona główna):</span>
+                <ul>
+                    <li>możliwość zmiany wyglądu komponentu wyszukiwania przy pomocy suwaka,</li>
+                    <li>możliwość wyszukiwanie słów w bazie słówek poprzez zapytanie do Web API,</li>
+                    <li>możliwość wyszukiwania słów po warmińsku i polsku.</li>
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Pasek na górze wszystkich stron:</span>
+                <ul>
+                    <li>umożliwia logowanie i wylogowywanie się ze strony; wykorzystywany jest Azure Active Directory;
+                        logowanie jest konieczne by mieć dostęp do trzech poniższych stron.</li>
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Wszystkie słowa:</span>
+                <ul>
+                    <li>tabela ze wszystkim słowami w bazie słów podzielona na strony (10 słów na stronę),</li>
+                    <li>paginacja – kliknięcie przycisku z numerem strony powoduje wysłanie zapytania do Web API o
+                        słówka z
+                        danej strony,</li>
+                    <li>sortowanie na wszystkich kolumnach w sposób alfabetyczny – kliknięcie na górze danej kolumny
+                        powoduje
+                        wysłanie zapytania do Web API o słówka z danej strony w wybranej kolejności,</li>
+                    <li>możliwość edycji słowa - po kliknięciu w przycisk Edytuj użytkownik jest przenoszony do strony
+                        edycji, gdzie może zmienić zapis słowa po warmińsku i polsku oraz zmienić jaką jest częścią mowy
+                        (część
+                        mowy wybierane są przez dropdown)
+                        <ul>
+                            <li>zaimplementowana jest walidacja uzupełnianych w formularzu pól – max 16 znaków itd.; w
+                                przypadku
+                                błędu walidacji zapytanie do API nie zostaje wysłane,</li>
+                            <li>kliknięcie Wróć przenosi użytkownika do strony ze wszystkim słowami (wczytując je
+                                ponownie),
+                            </li>
+                            <li>kliknięcie Zapisz, gdy dane przejdą pomyślnie proces walidacji wysyła żądanie edycji
+                                słowa do Web API i przenosi użytkownika do strony ze wszystkim słowami (wczytując je
+                                ponownie);</li>
+                            <li>po kliknięciu przycisku Usuń wyskakuje modal (pop-up) z pytanie czy na pewno użytkownik
+                                chce usunąć dane słowo,</li>
+                        </ul>
+                    </li>
+                    <li>kliknięcie przycisku Utwórz nowe słowo – przenosi użytkownika na stronę z formularzem, w którym
+                        może uzupełnić odpowiednie pola dotyczące słowa (takie same jak przy edycji),
+                        <ul>
+                            <li>zaimplementowana jest walidacja uzupełnianych w formularzu pól – max 16 znaków itd.; w
+                                przypadku
+                                błędu walidacji zapytanie do API nie zostaje wysłane,</li>
+                            <li>kliknięcie Wróć przenosi użytkownika do strony ze wszystkim słowami (wczytując je
+                                ponownie)
+                            </li>
+                            <li>kliknięcie Zapisz, gdy dane przejdą pomyślnie proces walidacji wysyła żądanie utworzenia
+                                słowa do Web API i przenosi użytkownika do strony ze wszystkim słowami (wczytując je
+                                ponownie)
+                            </li>
+                        </ul>
+                    </li>
+                    <li>gdy słowo zostanie zedytowane lub powiedzie się jego utworzenie wyświetla się toast ze stosowną
+                        informacją (do jego wyświetlenia używany jest krótki kod java scriptowy uruchamiany z poziomu
+                        kodu w
+                        C#)
+                    </li>
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Twoje kolekcje słów:</span>
+                <ul>
+                    <li>pokazuje w tabeli wszystkie kolekcje słów utworzonych przez użytkownika,</li>
+                    <li>użytkownik możne usunąć daną kolekcję – po kliknięciu przycisku Usuń przy danej kolekcji
+                        wyświetla się modal (pop-up) z pytaniem czy na pewno użytkownik chce usunąć daną kolekcję,</li>
+                    <li>kliknięcie przycisku Edytuj przy danej kolekcji, przenosi użytkownika do widoku z fomrumlarzem
+                        edycji kolekcji (nie przenosi nas na nową stronę razor),<ul>
+                            <li>w tym widoku użytkownik może usuwać słowa,</li>
+                            <li>dodawać nowe – robi to przez ich wyszukanie w bazie (do dyspozycji ma ten sam komponent
+                                wyszukiwania co na stronie głównej), wybranie odpowiedniej pozycji z tabeli wyszukanych
+                                tłumaczeń i kliknięcie przycisku Dodaj</li>
+                            <li>kliknięcie przycisku Wróć zmienia widok na tabelę kolekcji słów,</li>
+                            <li>kliknięcie przycisku Zapisz, gdy dane przejdą pomyślnie proces walidacji wysyła żądanie
+                                edycji kolekcji do Web API,</li>
+                        </ul>
+                    </li>
+                    <li>po kliknięciu przycisku Utwórz nową grupę, otwiera się modal (pop-up), który korzysta z tego
+                        samego
+                        komponentu z formularzem co w edycji kolekcji słów,<ul>
+                            <li>w okienku użytkownik może usuwać słowa,</li>
+                            <li>dodawać nowe – robi to przez ich wyszukanie w bazie (do dyspozycji ma ten sam komponent
+                                wyszukiwania co na stronie głównej), wybranie odpowiedniej pozycji z tabeli wyszukanych
+                                tłumaczeń i kliknięcie przycisku Dodaj,</li>
+                            <li>kliknięcie przycisku Zamknij zamyka modal,</li>
+                            <li>kliknięcie przycisku Utwórz, gdy dane przejdą pomyślnie proces walidacji wysyła żądanie
+                                utworzenia kolekcji do Web API,</li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Użytkownicy (tylko administrator jest autoryzowany by zobaczyć zawartość
+                    tej
+                    strony):
+                </span>
+                <ul>
+                    <li>pokazuje wszystkich aktywnych użytkowników tj. użytkowników, którzy utworzyli wcześniej kolekcję
+                        słów (dopiero w momencie tworzenia kolekcji słów, dane użytkownika są wpisywane do bazy danych)
+                    </li>
+                </ul>
+            </div>
+        }
+        else
+        {
+            <p><strong><em>The app is not finished yet!</em></strong></p>
+            <p>Frontend for the Warmian-Polish/Polish-Warmian dictionary (Warmian is a subdialect of Polish) written in
+                Blazor WebAssembly and based on Web API from the repository:
+                https://github.com/JakubJT/PolWarmDictionary_Backend.
+            </p>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Technologies and solutions used:</span>
+                <ul>
+                    <li>frontend application in Blazor WebAssembly technology,</li>
+                    <li>ready-made sets of free components written for Blazor: Mud Blazor and Radzen Blazor,</li>
+                    <li>components written for applications/pages utilizing HTML and JS: Bootstrap,</li>
+                    <li>Authentication/Authorization by Azure Active Directory,</li>
+                    <li>running java script code from the C# code level,</li>
+                    <li>Dependency Injection,</li>
+                    <li>error handling by shared Error component,</li>
+                    <li>Blazor.SessionStorage.WebAssembly library to use session storage,</li>
+                    <li>localization; english and polish version available.</li>
+                </ul>
+            </div>
+
+
+            <p class="readme-subtitle readme-functions">Pages functionalities</p>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Search (Home page):</span>
+                <ul>
+                    <li>changing the appearance of the search component using the slider,</li>
+                    <li>searching for words in the vocabulary database by querying the Web API,</li>
+                    <li>searching for words in Warmian and Polish.</li>
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Bar at the top of all pages:</span>
+                <ul>
+                    <li>allows user to log in and out of the website; Azure Active Directory is used; login is required
+                        to access the three pages below.</li>
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">All words:</span>
+                <ul>
+                    <li>a table with all the words in the word database divided into pages (10 words per page),</li>
+                    <li>pagination - clicking the page number button sends a request to the Web API for words from a
+                        given page,</li>
+                    <li>sorting on all columns in alphabetical and reverse order - clicking on the top of chosen column
+                        sends a request to the Web API for words from a given page in the selected order,</li>
+                    <li>word editing function - after clicking the Edit button, user is taken to the editing
+                        page, where she/he can change the spelling of the word in Warmian and Polish and change what
+                        part of
+                        speech it is (parts of speech are selected using dropdown) <ul>
+                            <li>validation of fields content is implemented - max 16 characters, etc.; in the case of a
+                                validation error, the request to the API is not sent,</li>
+                            <li>clicking Back button takes user to the page with all the words (reloading
+                                them),
+                            </li>
+                            <li>clicking Save button when the data was successfully validated sends a request
+                                to the Web API to edit the word and takes us to the page with all the words (reloading
+                                them);
+                            </li>
+                        </ul>
+                    </li>
+                    <li>after clicking the Delete button, a modal pops up asking if user really wants to delete
+                        the word,</li>
+                    <li>clicking the Create a new word button - takes user to the page with the
+                        form
+                        in which she/he can complete the appropriate word fields (the same fields as when editing),<ul>
+                            <li>validation of fields content is implemented - max 16 characters, etc.; in the case of a
+                                validation error, the request to the API is not sent,</li>
+                            <li>clicking Back button takes user to the page with all the words (reloading them)
+                            </li>
+                            <li>clicking Save button when the data was successfully validated sends a request
+                                to
+                                create the word to the Web API and takes user to the page with all the words (reloading
+                                them)
+                            </li>
+                        </ul>
+                    </li>
+
+                    <li>when the word edititng or creation is successful, a toast with suitable information is displayed
+                        (a short java script code running from the C# code level is used to display it)</li>
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Your word collections:</span>
+                <ul>
+                    <li>shows in the table all collections of words that user created,</li>
+                    <li>user can delete a chosen collection - after clicking the Delete button next to the
+                        chosen
+                        collection, a modal (pop-up) is displayed asking if user really wants to delete the collection,
+                    </li>
+                    <li>after clicking Edit button next to a chosen collection, it takes user to the view
+                        where she/he can edit the collection (it doesn't take user to a new razor page),<ul>
+                            <li>in this view user can delete words,</li>
+                            <li>add new ones - user can do it by searching for them in the database (using the same
+                                search
+                                component as on the home page), selecting the appropriate item from the table of found
+                                translations and clicking the Add button,</li>
+                            <li>clicking the Back button changes the view to the word collection table,</li>
+                            <li>clicking Save when the data was successfully validated sends a request to
+                                edit the collection to the Web API,</li>
+                        </ul>
+                    </li>
+                    <li>after clicking the Create a new group button, a modal (pop-up) shows up;
+                        modal uses the same component with the form as in the word collection editor, <ul>
+                            <li>in this window we can delete words,</li>
+                            <li>add new ones - user can do it by searching for them in the database (using the same
+                                search
+                                component as on the home page), selecting the appropriate item from the table of found
+                                translations and clicking the Add button,</li>
+                            <li>clicking the Close button closes the modal,</li>
+                            <li>clicking the Create button when the data was successfully validated sends a
+                                request to create the collection to the Web API,</li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+
+            <div class="readme-paragraph">
+                <span class="readme-subtitle">Users (only admin is authorized to see the content of this page):</span>
+                <ul>
+                    <li>shows all active users, i.e. users who have previously created a collection of words (only when
+                        creating a collection of words, user data is put into the database)</li>
+                </ul>
+            </div>
+        }
     </div>
 </div>
 
 @code {
     private bool IsRadzenBlazorStyle { get; set; } = true;
+
     protected override void OnInitialized()
     {
         if (SessionStorageServices.GetItem<bool?>("isRadzenBlazorStyle") == false)

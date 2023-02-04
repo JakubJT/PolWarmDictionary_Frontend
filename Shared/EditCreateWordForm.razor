@@ -11,41 +11,42 @@
 @inject ISessionStorageService SessionStorageServices
 @inject RequestMessageGenerator RequestMessageGenerator
 @inject Endpoint Endpoint
+@inject IStringLocalizer<Localization.Localization> Loc
 
 <div>
     <EditForm Model="@WordToSubmit" OnValidSubmit="@OnSubmit" class="mb-3">
         <DataAnnotationsValidator />
         <p>
             <label>
-                Po polsku:
+                @Loc["EditCreateWordFormInPolish"]
                 <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit!.InPolish" />
             </label>
             <ValidationMessage For="() => WordToSubmit.InPolish" />
         </p>
         <p>
             <label>
-                Po warmińsku
+                @Loc["EditCreateWordFormInWarmian"]
                 <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordToSubmit.InWarmian" />
             </label>
             <ValidationMessage For="() => WordToSubmit.InWarmian" />
         </p>
         <p>
             <label>
-                Część mowy
+                @Loc["EditCreateWordFormPartOfSpeech"]
                 <InputSelect @bind-Value="WordToSubmit.PartOfSpeechId" class="form-select">
-                    <option value="">Wybierz część mowy...</option>
-                    <option value="1">Rzeczownik</option>
-                    <option value="2">Czasownik</option>
-                    <option value="4">Przymiotnik</option>
-                    <option value="5">Przysłówek</option>
-                    <option value="3">Liczebnik</option>
-                    <option value="6">Zaimek</option>
-                    <option value="7">Inna</option>
+                    <option value="">@Loc["EditCreateWordFormChoosePartOfSpeech"]</option>
+                    <option value="1">@Loc["EditCreateWordFormNoun"]</option>
+                    <option value="2">@Loc["EditCreateWordFormVerb"]</option>
+                    <option value="4">@Loc["EditCreateWordFormAdjective"]</option>
+                    <option value="5">@Loc["EditCreateWordFormAdverb"]</option>
+                    <option value="3">@Loc["EditCreateWordFormNumeral"]</option>
+                    <option value="6">@Loc["EditCreateWordFormPronoun"]</option>
+                    <option value="7">@Loc["EditCreateWordFormOther"]</option>
                 </InputSelect>
             </label>
             <ValidationMessage For="() => WordToSubmit.PartOfSpeechId" />
         </p>
-        <button type="submit" class="btn btn-primary">Zapisz</button>
+        <button type="submit" class="btn btn-primary">@Loc["Save"]</button>
     </EditForm>
 </div>
 @if (ErrorHandleMessage != null)
@@ -74,7 +75,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Nie znaleziono słowa w bazie danych</p>
+                        <p>@Loc["EditCreateWordFormErrorWordNotFound"]</p>
                     </div>
                 };
                 Logger.LogError("GetWordById request returned status code: " + response.StatusCode.ToString());
@@ -85,7 +86,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Pobranie słowa się nie powiodło - <em>@response.StatusCode</em> </p>
+                        <p>@Loc["EditCreateWordFormGetErrorDefault"]<em>@response.StatusCode</em> </p>
                     </div>
                 };
                 return;
@@ -114,7 +115,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Nie znaleziono słowa w bazie danych</p>
+                        <p>@Loc["EditCreateWordFormErrorWordNotFound"]</p>
                     </div>
                 };
                 Logger.LogError("EditWord request returned status code: " + response.StatusCode.ToString());
@@ -125,7 +126,8 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                        <p><em>@WordToSubmit!.InPolish/@WordToSubmit.InWarmian/@WordToSubmit.PartOfSpeech</em> istnieje już bazie danych</p>
+                        <p><em>@WordToSubmit!.InPolish/@WordToSubmit.InWarmian/@WordToSubmit.PartOfSpeech</em>@Loc["EditCreateWordFormErrorWordConflict"]
+                        </p>
                     </div>
                 };
                 return;
@@ -137,11 +139,11 @@
                     <div class="alert alert-warning" role="alert">
                         @if (WordId == null)
                         {
-                            <p>Utworzenie słowa się nie powiodło - <em>@response.StatusCode</em></p>
+                            <p>@Loc["EditCreateWordFormErrorCreateWordDefault"]<em>@response.StatusCode</em></p>
                         }
                         else
                         {
-                            <p>Edycja słowa się nie powiodła - <em>@response.StatusCode</em></p>
+                            <p>@Loc["EditCreateWordFormErrorEditWordDefault"]<em>@response.StatusCode</em></p>
                         }
                     </div>
                 };

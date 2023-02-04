@@ -12,16 +12,17 @@
 @inject Endpoint Endpoint
 @inject Sorting Sorting
 @inject RequestMessageGenerator RequestMessageGenerator
+@inject IStringLocalizer<Localization.Localization> Loc
 
 
-<PageTitle>Twoje kolekcje słów</PageTitle>
+<PageTitle>@Loc["WordGroupsPageTitle"]</PageTitle>
 @if (EditMode)
 {
-    <EditWordGroup WordGroup="WordGroupToEdit" BackToReadMode="BackToReadMode"></EditWordGroup>
+    <EditCreateWordGroup WordGroup="WordGroupToEdit" BackToReadMode="BackToReadMode"></EditCreateWordGroup>
 }
 else
 {
-    <h1>Wszystkie słowa ze słownika</h1>
+    <h1>@Loc["WordGroupsHeading"]</h1>
     <div>
         @if (wordGroups == null)
         {
@@ -31,7 +32,7 @@ else
             }
             else
             {
-                <p><em>Wczytywanie...</em></p>
+                <p><em>@Loc["Loading"]</em></p>
                 <div class="spinner-border text-primary" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
@@ -44,12 +45,12 @@ else
                     <tr>
                         <th>
                             <button type="button" class="btn btn-outline-secondary btn-sm header-button">
-                                Nazwa
+                                @Loc["WordGroupsTableName"]
                             </button>
                         </th>
                         <th>
                             <button type="button" class="btn btn-outline-secondary btn-sm header-button">
-                                Ilość słów
+                                @Loc["WordGroupsTableWordNumber"]
                             </button>
                         </th>
                     </tr>
@@ -62,35 +63,34 @@ else
                             <td>@wordGroup.Words!.Count()</td>
                             <td class="narrow">
                                 <button type="button" class="btn btn-primary btn-sm" @onclick=@(() => { WordGroupToEdit = wordGroup;
-                        EditMode = true; })>Edytuj
+                        EditMode = true; })>@Loc["Edit"]
                                 </button>
                             </td>
                             <td class="narrow">
                                 <button type="button" class="btn btn-danger btn-sm" @onclick=@(() => DeleteClick(wordGroup))
-                        data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button>
+                                    data-bs-toggle="modal" data-bs-target="#deleteWordModal">@Loc["Delete"]</button>
                             </td>
                         </tr>
                     }
                 </tbody>
             </table>
             <div>
-                <button type="button" class="btn btn-primary btn-sm" @onclick="ShowModal">Utwórz nową
-                    grupę</button>
+                <button type="button" class="btn btn-primary btn-sm" @onclick="ShowModal">@Loc["WordGroupsCreateNew"]</button>
             </div>
         }
     </div>
 
 
     <div class="modal fade" id="createCollectionModal" tabindex="-1" aria-labelledby="createCollectionModalLabel"
-    aria-hidden="true">
+        aria-hidden="true">
         <div class="modal-dialog modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createCollectionModalLabel">Nowa kolekcja</h5>
+                    <h5 class="modal-title" id="createCollectionModalLabel">@Loc["WordGroupsCreateModalTitle"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <EditWordGroup CreateForm="true" BackToReadMode="BackToReadMode"></EditWordGroup>
+                    <EditCreateWordGroup CreateForm="true" BackToReadMode="BackToReadMode"></EditCreateWordGroup>
                 </div>
             </div>
         </div>
@@ -101,7 +101,7 @@ else
     <div class="toast bg-info" id="actionToast" role="alert" aria-live="assertive" aria-atomic="true">
         <div class="d-flex">
             <div class="toast-body">
-                Uwtorzenie/edycja kolekcji słów powiodła sie.
+                @Loc["WordGroupsToastContent"]
             </div>
             <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
@@ -112,15 +112,16 @@ else
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteWordModalLabel">Usuwanie słowa</h5>
+                <h5 class="modal-title" id="deleteWordModalLabel">@Loc["WordGroupsDeleteModalTitle"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Na pewno chcesz usunąć kolekcję <em>@wordGroupToDelete?.Name</em>?</p>
+                <p>@Loc["WordGroupsDeleteModalContent"]<em>@wordGroupToDelete?.Name</em>?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="DeleteWord">Tak</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Loc["No"]</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal"
+                    @onclick="DeleteWordGroup">@Loc["Yes"]</button>
             </div>
         </div>
     </div>
@@ -200,11 +201,10 @@ else
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                        Nie masz jeszcze utworzonych żadnych kolekcji słów
+                        @Loc["WordGroupsGetWordGroupsErrorNoContent"]
                     </div>
                     <div>
-                        <button type="button" class="btn btn-primary btn-sm" @onclick="ShowModal">Utwórz nową
-                            grupę</button>
+                        <button type="button" class="btn btn-primary btn-sm" @onclick="ShowModal">@Loc["WordGroupsCreateNew"]</button>
                     </div>
                 };
                 return;
@@ -214,7 +214,7 @@ else
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Pobranie kolekcji słów się nie powiodło - <em>{getResponse.StatusCode}</em>
+                        @Loc["WordGroupsGetWordGroupsErrorDefault"]<em>@getResponse.StatusCode</em>
                     </div>
                 };
                 return;
@@ -233,7 +233,7 @@ else
         wordGroupToDelete = wordGroup;
     }
 
-    public async Task DeleteWord()
+    public async Task DeleteWordGroup()
     {
         try
         {
@@ -245,7 +245,7 @@ else
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Nie znaleziono kolekcji "@wordGroupToDelete.Name" w bazie danych
+                        @(String.Format(@Loc["WordGroupsDeleteWordGroupErrorNotFound"], @wordGroupToDelete.Name))
                     </div>
                 };
                 Logger.LogError("DeleteWordGroup request returned status code: " + deleteResponse.StatusCode.ToString());
@@ -256,7 +256,7 @@ else
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Usunięcie kolekcje się nie powiodło - <em>{response.StatusCode}</em>
+                        @Loc["WordGroupsDeleteWordGroupErrorDefault"]<em>{response.StatusCode}</em>
                     </div>
                 };
                 return;

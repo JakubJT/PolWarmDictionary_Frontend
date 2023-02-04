@@ -12,18 +12,19 @@
 @inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
 @inject RequestMessageGenerator RequestMessageGenerator
+@inject IStringLocalizer<Localization.Localization> Loc
 
 <div>
     <EditForm Model="@WordGroup" OnValidSubmit="@OnSubmit" class="mb-3">
         <DataAnnotationsValidator />
         <p>
             <label>
-                Nazwa kolekcji:
+                @Loc["EditCreateWordGroupCollectionName"]
                 <InputText minlength=1 maxlength=16 class="form-control" @bind-Value="WordGroup!.Name" />
             </label>
             <ValidationMessage For="() => WordGroup.Name" />
         </p>
-        Słowa:
+        @Loc["EditCreateWordGroupWords"]
         @if (WordGroup.Words != null)
         {
             @foreach (var word in WordGroup.Words)
@@ -37,7 +38,7 @@
                         <InputText disabled="true" minlength=1 maxlength=16 class="form-control" @bind-Value="word.InWarmian" />
                     </div>
                     <button type="button" class="btn btn-danger btn-sm word-button" @onclick=@(() =>
-                DeleteClick(word))>Usuń</button>
+                DeleteClick(word))>@Loc["Delete"]</button>
                 </div>
                 </p>
             }
@@ -51,14 +52,15 @@
         }
         @if (CreateForm)
         {
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Zamknij</button>
-            <button type="submit" class="btn btn-primary">Utwórz</button>
+            <button type="button" class="btn btn-secondary"
+                data-bs-dismiss="modal">@Loc["EditCreateWordGroupClose"]</button>
+            <button type="submit" class="btn btn-primary">@Loc["EditCreateWordGroupCreate"]</button>
         }
         else
         {
             <button type="button" class="btn btn-secondary" @onclick=@(() =>
-            BackToReadMode.InvokeAsync(false))>Wróć</button>
-            <button type="submit" class="btn btn-primary">Zapisz</button>
+            BackToReadMode.InvokeAsync(false))>@Loc["EditCreateWordGroupBack"]</button>
+            <button type="submit" class="btn btn-primary">@Loc["Save"]</button>
         }
     </EditForm>
 </div>
@@ -97,7 +99,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Nie znaleziono kolekcji słów w bazie danych</p>
+                        <p>@Loc["EditCreateWordGroupErrorGroupNotFound"]</p>
                     </div>
                 };
                 Logger.LogError("Create/EditWordGroup request returned status code: " + response.StatusCode.ToString());
@@ -108,7 +110,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                        <p>Posiadasz już kolekcję o nazwie <em>@WordGroup!.Name</em></p>
+                        <p>@Loc["EditCreateWordGroupErrorGroupConflict"]<em>@WordGroup!.Name</em></p>
                     </div>
                 };
                 return;
@@ -118,7 +120,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        <p>Utworzenie/Edycja kolekcji słów się nie powiodła - <em>@response.StatusCode</em></p>
+                        <p>@Loc["EditCreateWordGroupErrorDefault"]<em>@response.StatusCode</em></p>
                     </div>
                 };
                 return;
@@ -145,7 +147,8 @@
             ErrorHandleMessage = __builder =>
             {
                 <div class="alert alert-warning" role="alert">
-                    <p>Słowo <em>@word.InPolish/@word.InWarmian/@word.PartOfSpeech</em> znajduje się już w kolekcji.</p>
+                    <p>@Loc["EditCreateWordGroupErrorWordExists1"]<em>@word.InPolish/@word.InWarmian/@word.PartOfSpeech</em>
+                        @Loc["EditCreateWordGroupErrorWordExists2"]</p>
                 </div>
             };
         }

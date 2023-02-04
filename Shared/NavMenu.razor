@@ -1,6 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@inject IStringLocalizer<Localization.Localization> Loc
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="">Słownik Polsko-Warmiński</a>
+        <a class="navbar-brand" href="">@Loc["NavMenuTitle"]</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -10,36 +12,36 @@
     <nav class="flex-column">
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
-                <span class="oi oi-home" aria-hidden="true"></span> Szukaj
+                <span class="oi oi-home" aria-hidden="true"></span>@Loc["NavMenuSearch"]
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="allwords">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Wszystkie słowa
+                <span class="oi oi-list-rich" aria-hidden="true"></span>@Loc["NavMenuAllWords"]
             </NavLink>
         </div>
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="wordgroups">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Twoje kolekcje słów
+                        <span class="oi oi-list-rich" aria-hidden="true"></span>@Loc["NavMenuYourWordCollections"]
                     </NavLink>
                 </div>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="users">
-                        <span class="oi oi-list-rich" aria-hidden="true"></span> Użytkownicy
+                        <span class="oi oi-list-rich" aria-hidden="true"></span>@Loc["NavMenuUsers"]
                     </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="interestingfacts">
-                <span class="oi oi-eye" aria-hidden="true"></span> Ciekawostki o języku
+                <span class="oi oi-eye" aria-hidden="true"></span>@Loc["NavMenuInterestingFacts"]
             </NavLink>
         </div>
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="warmiantexts">
-                <span class="oi oi-book" aria-hidden="true"></span> Teksty po warmińsku
+                <span class="oi oi-book" aria-hidden="true"></span>@Loc["NavMenuWarmianTexts"]
             </NavLink>
         </div>
     </nav>

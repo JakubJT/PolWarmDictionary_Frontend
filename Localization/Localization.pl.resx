@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutPageTitle" xml:space="preserve">
+    <value>O słowniku</value>
+  </data>
+  <data name="AllWordsInPolish" xml:space="preserve">
+    <value>Po polsku</value>
+  </data>
+  <data name="AllWordsInWarmian" xml:space="preserve">
+    <value>Po warmińsku</value>
+  </data>
+  <data name="AllWordsPartOfSpeech" xml:space="preserve">
+    <value>Część mowy</value>
+  </data>
+  <data name="AllWordsEdit" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="AllWordsDelete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="AllWordsPageTitle" xml:space="preserve">
+    <value>Wszystkie słówka</value>
+  </data>
+  <data name="AllWordsHeading" xml:space="preserve">
+    <value>Wszystkie słowa ze słownika</value>
+  </data>
+  <data name="AllWordsAddNewWord" xml:space="preserve">
+    <value>Dodaj nowe słowo</value>
+  </data>
+  <data name="AllWordsToastContent" xml:space="preserve">
+    <value>Dodanie/edycja słowa powiodła sie.</value>
+  </data>
+  <data name="AllWordsModalTitle" xml:space="preserve">
+    <value>Usuwanie słowa</value>
+  </data>
+  <data name="AllWordsModalContent" xml:space="preserve">
+    <value>Na pewno chcesz usunąć słowo </value>
+  </data>
+  <data name="AllWordsGetWordsErrorNoContent" xml:space="preserve">
+    <value>Brak słów w bazie danych</value>
+  </data>
+  <data name="AllWordsGetWordsErrorDefault" xml:space="preserve">
+    <value>Wyświetlenie słów się nie powiodło - </value>
+  </data>
+  <data name="AllWordsDeleteWordErrorNotFound" xml:space="preserve">
+    <value>Nie znaleziono słowa "{0}" w bazie danych</value>
+  </data>
+  <data name="AllWordsDeleteWordErrorDefault" xml:space="preserve">
+    <value>Usunięcie słowa się nie powiodło - </value>
+  </data>
+  <data name="IndexPageTitle" xml:space="preserve">
+    <value>Słownik Polsko-Warmiński - Strona Główna</value>
+  </data>
+    <data name="IndexDescription" xml:space="preserve">
+    <value>Słownik Polsko-Warmiński i Warmińsko-Polski online</value>
+  </data>
+  <data name="IndexHeading" xml:space="preserve">
+    <value>Witajcie w słowniku warmińsko-polskim/polsko-warmińskim!</value>
+  </data>
+  <data name="IndexChangeStyleButton" xml:space="preserve">
+    <value>Zmień styl search bara</value>
+  </data>
+  <data name="IndexUserInfo1" xml:space="preserve">
+    <value>Żeby uzyskać dostęp do strony "Wszystkie słowa" i "Twoje kolekcje słów" podaj login: 
+    </value>
+  </data>
+  <data name="IndexUserInfo2" xml:space="preserve">
+    <value> i hasło: </value>
+  </data>
+  <data name="IndexAdminInfo1" xml:space="preserve">
+    <value>Żeby zalogwać się jako administrator i uzyskać dodatkowo dostęp do zawartości strony "Użytkownicy" podaj login: </value>
+  </data>
+  <data name="IndexAdminInfo2" xml:space="preserve">
+    <value> i hasło: </value>
+  </data>
+  <data name="InterestingFactsPageTitle" xml:space="preserve">
+    <value>Ciekawostki o języku</value>
+  </data>
+  <data name="InterestingFactsContent" xml:space="preserve">
+    <value>Tutaj jakieś ciekawostki o języku</value>
+  </data>
+  <data name="UsersPageTitle" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+  <data name="UsersHeading" xml:space="preserve">
+    <value>Wszyscy aktywni użytkownicy słownika</value>
+  </data>
+  <data name="UsersUserInfoTitle" xml:space="preserve">
+    <value>Użytkownik</value>
+  </data>
+  <data name="UsersUserInfoName" xml:space="preserve">
+    <value>Imię i nazwisko</value>
+  </data>
+  <data name="UsersUserInfoNoEmail" xml:space="preserve">
+    <value>brak danych</value>
+  </data>
+  <data name="UsersUserInfoCollectionNumber" xml:space="preserve">
+    <value>Ilość kolekcji słów</value>
+  </data>
+    <data name="UsersGetUsersErrorUnauthorized" xml:space="preserve">
+    <value>Tylko administrator ma możliwość przeglądać aktywnych użytkowników.</value>
+  </data>
+    <data name="UsersGetUsersErrorNoContent" xml:space="preserve">
+    <value>Nie ma jeszcze żadnych aktywnych użytkowników</value>
+  </data>
+    <data name="UsersGetUsersErrorDefault" xml:space="preserve">
+    <value>Pobranie użytkowników się nie powiodło - </value>
+  </data>
+  <data name="WarmianTextsPageTitle" xml:space="preserve">
+    <value>Teksty po warmińsku</value>
+  </data>
+  <data name="WordGroupsPageTitle" xml:space="preserve">
+    <value>Twoje kolekcje słów</value>
+  </data>
+  <data name="WordGroupsHeading" xml:space="preserve">
+    <value>Wszystkie twoje kolekcje słów</value>
+  </data>
+  <data name="WordGroupsCreateModalTitle" xml:space="preserve">
+    <value>Nowa kolekcja</value>
+  </data>
+  <data name="WordGroupsToastContent" xml:space="preserve">
+    <value>Uwtorzenie/edycja kolekcji słów powiodła sie.</value>
+  </data>
+    <data name="WordGroupsDeleteModalTitle" xml:space="preserve">
+    <value>Usuwanie kolekcji słów</value>
+  </data>
+    <data name="WordGroupsDeleteModalContent" xml:space="preserve">
+    <value>Na pewno chcesz usunąć kolekcję </value>
+  </data>
+  <data name="WordGroupsCreateNew" xml:space="preserve">
+    <value>Utwórz nową grupę</value>
+  </data>
+  <data name="WordGroupsTableWordNumber" xml:space="preserve">
+    <value>Ilość słów</value>
+  </data>
+  <data name="WordGroupsTableName" xml:space="preserve">
+    <value>Nazwa</value>
+  </data>
+    <data name="WordGroupsGetWordGroupsErrorNoContent" xml:space="preserve">
+    <value>Nie masz jeszcze utworzonych żadnych kolekcji słów</value>
+  </data>
+    <data name="WordGroupsGetWordGroupsErrorDefault" xml:space="preserve">
+    <value>Pobranie kolekcji słów się nie powiodło - </value>
+  </data>
+    <data name="WordGroupsDeleteWordGroupErrorNotFound" xml:space="preserve">
+    <value>Nie znaleziono kolekcji "{0}" w bazie danych</value>
+  </data>
+    <data name="WordGroupsDeleteWordGroupErrorDefault" xml:space="preserve">
+    <value>Usunięcie kolekcji się nie powiodło - </value>
+  </data>
+    <data name="EditCreateWordFormInPolish" xml:space="preserve">
+    <value>Po polsku</value>
+  </data>
+    <data name="EditCreateWordFormInWarmian" xml:space="preserve">
+    <value>Po warmińsku</value>
+  </data>
+    <data name="EditCreateWordFormPartOfSpeech" xml:space="preserve">
+    <value>Część mowy</value>
+  </data>
+    <data name="EditCreateWordFormChoosePartOfSpeech" xml:space="preserve">
+    <value>Wybierz część mowy...</value>
+  </data>
+    <data name="EditCreateWordFormNoun" xml:space="preserve">
+    <value>Rzeczownik</value>
+  </data>
+    <data name="EditCreateWordFormVerb" xml:space="preserve">
+    <value>Czasownik</value>
+  </data>
+    <data name="EditCreateWordFormAdjective" xml:space="preserve">
+    <value>Przymiotnik</value>
+  </data>
+    <data name="EditCreateWordFormAdverb" xml:space="preserve">
+    <value>Przysłówek</value>
+  </data>
+    <data name="EditCreateWordFormNumeral" xml:space="preserve">
+    <value>Liczebnik</value>
+  </data>
+    <data name="EditCreateWordFormPronoun" xml:space="preserve">
+    <value>Zaimek</value>
+  </data>
+    <data name="EditCreateWordFormOther" xml:space="preserve">
+    <value>Inna</value>
+  </data>
+  <data name="EditCreateWordFormErrorWordNotFound" xml:space="preserve">
+    <value>Nie znaleziono słowa w bazie danych</value>
+  </data>
+    <data name="EditCreateWordFormGetErrorDefault" xml:space="preserve">
+    <value>Pobranie słowa się nie powiodło - </value>
+  </data>
+    <data name="EditCreateWordFormErrorWordConflict" xml:space="preserve">
+    <value> istnieje już bazie danych</value>
+  </data>
+    <data name="EditCreateWordFormErrorCreateWordDefault" xml:space="preserve">
+    <value>Utworzenie słowa się nie powiodło - </value>
+  </data>
+    <data name="EditCreateWordFormErrorEditWordDefault" xml:space="preserve">
+    <value>Edycja słowa się nie powiodła - </value>
+  </data>
+  <data name="EditCreateWordGroupCollectionName" xml:space="preserve">
+    <value>Nazwa kolekcji:</value>
+  </data>
+  <data name="EditCreateWordGroupWords" xml:space="preserve">
+    <value>Słowa</value>
+  </data>
+  <data name="EditCreateWordGroupClose" xml:space="preserve">
+    <value>Zamknij</value>
+  </data>
+  <data name="EditCreateWordGroupCreate" xml:space="preserve">
+    <value>Utwórz</value>
+  </data>
+  <data name="EditCreateWordGroupBack" xml:space="preserve">
+    <value>Wróć</value>
+  </data>
+  <data name="EditCreateWordGroupErrorGroupNotFound" xml:space="preserve">
+    <value>Nie znaleziono kolekcji słów w bazie danych</value>
+  </data>
+  <data name="EditCreateWordGroupErrorGroupConflict" xml:space="preserve">
+    <value>Posiadasz już kolekcję o nazwie </value>
+  </data>
+  <data name="EditCreateWordGroupErrorDefault" xml:space="preserve">
+    <value>Utworzenie/Edycja kolekcji słów się nie powiodła - </value>
+  </data>
+  <data name="EditCreateWordGroupErrorWordExists1" xml:space="preserve">
+    <value>Słowo </value>
+  </data>
+  <data name="EditCreateWordGroupErrorWordExists2" xml:space="preserve">
+    <value> znajduje się już w kolekcji.</value>
+  </data>
+  <data name="MainLayoutAbout" xml:space="preserve">
+    <value>O słowniku</value>
+  </data>
+  <data name="NavMenuTitle" xml:space="preserve">
+    <value>Słownik Polsko-Warmiński</value>
+  </data>
+  <data name="NavMenuSearch" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="NavMenuAllWords" xml:space="preserve">
+    <value>Wszystkie słowa</value>
+  </data>
+  <data name="NavMenuYourWordCollections" xml:space="preserve">
+    <value>Twoje kolekcje słów</value>
+  </data>
+  <data name="NavMenuUsers" xml:space="preserve">
+    <value>Użytkownicy</value>
+  </data>
+  <data name="NavMenuInterestingFacts" xml:space="preserve">
+    <value>Ciekawostki o języku</value>
+  </data>
+  <data name="NavMenuWarmianTexts" xml:space="preserve">
+    <value>Teksty po warmińsku</value>
+  </data>
+  <data name="LoginDisplayGreeting" xml:space="preserve">
+    <value>Witaj </value>
+  </data>
+  <data name="LoginDisplayLogin" xml:space="preserve">
+    <value>Wyloguj się</value>
+  </data>
+  <data name="LoginDisplayLogout" xml:space="preserve">
+    <value>Zaloguj się</value>
+  </data>
+  <data name="SearchChangeLanguage" xml:space="preserve">
+    <value>Zmień język</value>
+  </data>
+  <data name="SearchPolish" xml:space="preserve">
+    <value>Polski</value>
+  </data>
+  <data name="SearchWarmian" xml:space="preserve">
+    <value>Warmiński</value>
+  </data>
+  <data name="SearchSearch" xml:space="preserve">
+    <value>Szukaj</value>
+  </data>
+  <data name="SearchPartOfSpeech" xml:space="preserve">
+    <value>Część mowy</value>
+  </data>
+  <data name="SearchAdd" xml:space="preserve">
+    <value>Dodaj</value>
+  </data>
+  <data name="SearchErrorNoContent" xml:space="preserve">
+    <value>Nie znaleziono słowa "{0}" w bazie danych</value>
+  </data>
+  <data name="SearchErrorDefault" xml:space="preserve">
+    <value>Wyszukanie słowa się nie powiodło - </value>
+  </data>
+  <data name="ErrorDefaultError" xml:space="preserve">
+    <value>Coś poszło nie tak: </value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Tak</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>Nie</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Wczytywanie...</value>
+  </data>
+    <data name="Edit" xml:space="preserve">
+    <value>Edytuj</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Usuń</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Zapisz</value>
+  </data>
+</root>

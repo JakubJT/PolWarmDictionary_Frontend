@@ -4,17 +4,18 @@
 @inject IConfiguration Configuration
 @inject ISessionStorageService SessionStorageServices
 @inject Endpoint Endpoint
+@inject IStringLocalizer<Localization.Localization> Loc
 
 <div>
     <p>
-        <button type="button" class="btn btn-primary" @onclick="ChangeLanguage">Zmień język</button>
+        <button type="button" class="btn btn-primary" @onclick="ChangeLanguage">@Loc["SearchChangeLanguage"]</button>
         @if (PolishToWarmianTranslation)
         {
-            <span> Polski <span class="oi oi-arrow-right" aria-hidden="true"></span> Warmiński</span>
+            <span>@Loc["SearchPolish"]<span class="oi oi-arrow-right" aria-hidden="true"></span>@Loc["SearchWarmian"]</span>
         }
         else
         {
-            <span> Warmiński <span class="oi oi-arrow-right" aria-hidden="true"></span> Polski</span>
+            <span>@Loc["SearchWarmian"]<span class="oi oi-arrow-right" aria-hidden="true"></span>@Loc["SearchPolish"]</span>
         }
     </p>
 </div>
@@ -24,7 +25,7 @@
     {
             <form @onsubmit="OnSubmit" >
                 <p>
-                    <RadzenTextBox Placeholder="Szukaj..." @bind-Value="TextValue" Class="w-100" MaxLength=15 />
+                    <RadzenTextBox Placeholder="@Loc["SearchSearch"]" @bind-Value="TextValue" Class="w-100" MaxLength=15 />
                 </p>
             @if (Result != null)
             {
@@ -34,15 +35,15 @@
                         <Columns>
                             @if (PolishToWarmianTranslation)
                             {
-                                <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="Polski" />
-                                <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="Warmiński" />
-                                <RadzenDataGridColumn TItem="Word" Property="PartOfSpeech" Title="Część mowy" />
+                                <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="@Loc["SearchPolish"]" />
+                                <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="@Loc["SearchWarmian"]" />
+                                <RadzenDataGridColumn TItem="Word" Property="PartOfSpeech" Title="@Loc["SearchPartOfSpeech"]" />
                             }
                             else
                             {
-                                <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="Warmiński" />
-                                <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="Polski" />
-                                <RadzenDataGridColumn TItem="Word" Property="PartOfSpeech" Title="Część mowy" />
+                                <RadzenDataGridColumn TItem="Word" Property="InWarmian" Title="@Loc["SearchWarmian"]" />
+                                <RadzenDataGridColumn TItem="Word" Property="InPolish" Title="@Loc["SearchPolish"]" />
+                                <RadzenDataGridColumn TItem="Word" Property="PartOfSpeech" Title="@Loc["SearchPartOfSpeech"]" />
                             }
                         </Columns>
                     </RadzenDataGrid>
@@ -50,7 +51,7 @@
                 @if (EditGroupMode)
                 {
                     <button type="button" class="btn btn-primary btn-sm button-add @isDisabled" @onclick=@(()=> { if(selectedWord !=null)
-                        AddWord.InvokeAsync(selectedWord.FirstOrDefault());})>Dodaj
+                        AddWord.InvokeAsync(selectedWord.FirstOrDefault());})>@Loc["SearchAdd"]
                     </button>
                 }
             }
@@ -59,7 +60,7 @@
     else
     {
             <form @onsubmit="OnSubmit">
-                <MudTextField @bind-Value="TextValue" Label="Szukaj" Variant="MudBlazor.Variant.Outlined" MaxLength=15
+                <MudTextField @bind-Value="TextValue" Label="@Loc["SearchSearch"]" Variant="MudBlazor.Variant.Outlined" MaxLength=15
             Adornment="Adornment.End" AdornmentIcon="@Icons.Filled.Search" OnAdornmentClick="OnSubmit">
                 </MudTextField>
             @if (Result != null)
@@ -67,9 +68,9 @@
                 <p>
                     <MudTable Items="@Result" Hover="true">
                         <HeaderContent>
-                            <MudTh>@(PolishToWarmianTranslation ? "Polski" : "Warmiński")</MudTh>
-                            <MudTh>@(PolishToWarmianTranslation ? "Warmiński" : "Polski")</MudTh>
-                            <MudTh>Część mowy</MudTh>
+                            <MudTh>@(PolishToWarmianTranslation ? @Loc["SearchPolish"] : @Loc["SearchWarmian"])</MudTh>
+                            <MudTh>@(PolishToWarmianTranslation ? @Loc["SearchWarmian"] : @Loc["SearchPolish"])</MudTh>
+                            <MudTh>@Loc["SearchPartOfSpeech"]</MudTh>
                         </HeaderContent>
                         <RowTemplate>
                             <MudTd DataLabel=@(PolishToWarmianTranslation ? "Polish" : "Warmian")>@(PolishToWarmianTranslation ?
@@ -139,7 +140,7 @@
             ErrorHandleMessage = __builder =>
             {
                 <div class="alert alert-secondary" role="alert">
-                    Brak słowa "@TextValue" w bazie danych
+                    @(String.Format(@Loc["SearchErrorNoContent"], @TextValue))
                 </div>
 
             };
@@ -164,7 +165,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                      Brak słowa "@TextValue" w bazie danych
+                      @(String.Format(@Loc["SearchErrorNoContent"], @TextValue))
                     </div>
 
                 };
@@ -179,7 +180,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Wyszukanie słowa się nie powiodło - <em>@response.StatusCode</em>
+                        @Loc["SearchErrorDefault"]<em>@response.StatusCode</em>
                     </div>
 
                 };

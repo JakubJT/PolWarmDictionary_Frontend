@@ -12,11 +12,12 @@
 @inject Endpoint Endpoint
 @inject Sorting Sorting
 @inject RequestMessageGenerator RequestMessageGenerator
+@inject IStringLocalizer<Localization.Localization> Loc
 
 
-<PageTitle>Wszystkie słówka</PageTitle>
+<PageTitle>@Loc["AllWordsPageTitle"]</PageTitle>
 
-<h1>Wszystkie słowa ze słownika</h1>
+<h1>@Loc["AllWordsHeading"]</h1>
 <div class="wrapper">
     @if (words == null)
     {
@@ -26,7 +27,7 @@
         }
         else
         {
-            <p><em>Wczytywanie...</em></p>
+            <p><em>@Loc["Loading"]</em></p>
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
@@ -39,17 +40,17 @@
                     <tr>
                         <th>
                             <button type="button" class="btn btn-outline-secondary btn-sm header-button" @onclick=@(async() => await SortClick("InPolish"))>
-                                Po polsku
+                                @Loc["AllWordsInPolish"]
                             </button>
                         </th>
                         <th>
                             <button type="button" class="btn btn-outline-secondary btn-sm header-button" @onclick=@(async() => await SortClick("InWarmian"))>
-                                Po warmińsku
+                                @Loc["AllWordsInWarmian"]
                             </button>
                         </th>
                         <th>
                             <button type="button" class="btn btn-outline-secondary btn-sm header-button" @onclick=@(async() => await SortClick("PartOfSpeech"))>
-                                Część mowy
+                                @Loc["AllWordsPartOfSpeech"]
                              </button>
                         </th>
                     </tr>
@@ -63,12 +64,12 @@
                                 <td>@word.PartOfSpeech</td>
                                 <td class="narrow">
                                     <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
-                                        NavigationManager.NavigateTo($"/EditWord/{word.Id}"))>Edytuj
+                                        NavigationManager.NavigateTo($"/EditWord/{word.Id}"))>@Loc["AllWordsEdit"]
                                     </button>
                                 </td>
                                 <td class="narrow">
                                     <button type="button" class="btn btn-danger btn-sm" @onclick=@(() =>
-                                        DeleteClick(word)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">Usuń</button>
+                                        DeleteClick(word)) data-bs-toggle="modal" data-bs-target="#deleteWordModal">@Loc["AllWordsDelete"]</button>
                                 </td>
                             </tr>
                 }
@@ -80,7 +81,7 @@
             </div>
             <div>            
                 <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
-                    NavigationManager.NavigateTo($"/CreateWord"))>Dodaj nowe słowo</button>
+                    NavigationManager.NavigateTo($"/CreateWord"))>@Loc["AllWordsAddNewWord"]</button>
             </div>
     }
 </div>
@@ -88,7 +89,7 @@
     <div class="toast bg-info" id="actionToast" role="alert" aria-live="assertive" aria-atomic="true">  
         <div class="d-flex">
                 <div class="toast-body">
-                    Dodanie/edycja słowa powiodła sie.
+                    @Loc["AllWordsToastContent"]
                 </div>
                 <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
         </div>
@@ -99,15 +100,15 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="deleteWordModalLabel">Usuwanie słowa</h5>
+                <h5 class="modal-title" id="deleteWordModalLabel">@Loc["AllWordsModalTitle"]</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body">
-                <p>Na pewno chcesz usunąć słowo <em>@wordToDelete?.InPolish</em>?</p>
+                <p>@Loc["AllWordsModalContent"]<em>@wordToDelete?.InPolish</em>?</p>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Nie</button>
-                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="DeleteWord">Tak</button>
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">@Loc["No"]</button>
+                <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @onclick="DeleteWord">@Loc["Yes"]</button>
             </div>
         </div>
     </div>
@@ -162,11 +163,11 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                        Brak słów w bazie danych
+                        @Loc["AllWordsGetWordsErrorNoContent"]
                     </div>
                     <div>            
                         <button type="button" class="btn btn-primary btn-sm" @onclick=@(() =>
-                            NavigationManager.NavigateTo($"/CreateWord"))>Dodaj nowe słowo</button>
+                            NavigationManager.NavigateTo($"/CreateWord"))>@Loc["AllWordsAddNewWord"]</button>
                     </div>
                 };
                 return;
@@ -176,7 +177,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Wyświetlenie słów się nie powiodło - <em>@response.StatusCode</em>
+                        @Loc["AllWordsGetWordsErrorDefault"]<em>@response.StatusCode</em>
                     </div>
                 };
                 return;
@@ -212,7 +213,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Nie znaleziono słowa "@wordToDelete.InPolish" w bazie danych
+                        @(String.Format(@Loc["AllWordsDeleteWordErrorNotFound"], @wordToDelete.InPolish))
                     </div>
                 };
                 Logger.LogError("DeleteWord request returned status code: " + deleteResponse.StatusCode.ToString());
@@ -223,7 +224,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Usunięcie słowa się nie powiodło - <em>{response.StatusCode}</em>
+                        @Loc["AllWordsDeleteWordErrorDefault"]<em>{response.StatusCode}</em>
                     </div>
                 };
                 return;

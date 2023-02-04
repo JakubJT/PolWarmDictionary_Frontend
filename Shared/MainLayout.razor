@@ -1,4 +1,9 @@
 ﻿@inherits LayoutComponentBase
+@implements IAsyncDisposable
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@inject IStringLocalizer<Localization.Localization> Loc
+@using System.Globalization
 
 <MudThemeProvider />
 <div class="page">
@@ -9,7 +14,13 @@
     <main>
         <div class="top-row px-4">
             <LoginDisplay />
-            <NavLink href="about">O słowniku</NavLink>
+            <NavLink href="about">@Loc["MainLayoutAbout"]</NavLink>
+            <RadzenSelectBar Size="ButtonSize.Small" @bind-Value=@value TValue="bool" Change=@OnChange>
+                <Items>
+                    <RadzenSelectBarItem Text="Polski" Value="true" />
+                    <RadzenSelectBarItem Text="English" Value="false" />
+                </Items>
+            </RadzenSelectBar>
         </div>
 
         <article class="content px-4">
@@ -17,3 +28,41 @@
         </article>
     </main>
 </div>
+
+@code {
+    bool value;
+    private IJSObjectReference? module;
+    private string? result;
+
+    protected override void OnInitialized()
+    {
+        if (CultureInfo.CurrentCulture.Name == "en") value = false;
+        else if (CultureInfo.CurrentCulture.Name == "pl") value = true;
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            module = await JS.InvokeAsync<IJSObjectReference>("import",
+            "./Shared/MainLayout.razor.js");
+        }
+    }
+
+    public void OnChange(bool value)
+    {
+        if (value) module!.InvokeAsync<string>("setCulture", "pl");
+        else module!.InvokeAsync<string>("setCulture", "en");
+
+        NavigationManager.NavigateTo(NavigationManager.Uri, forceLoad: true);
+    }
+
+    async ValueTask IAsyncDisposable.DisposeAsync()
+    {
+        if (module is not null)
+        {
+            await module.DisposeAsync();
+        }
+    }
+
+}

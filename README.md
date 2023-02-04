@@ -14,7 +14,8 @@ Użyte technologie, rozwiązania:
 - uruchamianie kodu java scriptowego z poziomu kodu C#,
 - Dependency Injection,
 - obsługa błędów przez wspólny komponent Error,
-- biblioteka Blazor.SessionStorage.WebAssembly w celu korzystania z session storage.
+- biblioteka Blazor.SessionStorage.WebAssembly w celu korzystania z session storage,
+- lokalizacja; dostępna jest angielska i polska wersja słownika.
 
 
 Funkcjonalności w rozbiciu na poszczególne strony dostępne w aplikacji.
@@ -42,7 +43,7 @@ Wszystkie słowa:
   - kliknięcie Zapisz, gdy dane przejdą pomyślnie proces walidacji wysyła żądanie utworzenia słowa do Web API i przenosi użytkownika do strony ze wszystkim słowami (wczytując je ponownie)
 - gdy słowo zostanie zedytowane lub powiedzie się jego utworzenie wyświetla się toast ze stosowną informacją (do jego wyświetlenia używany jest krótki kod java scriptowy uruchamiany z poziomu kodu w C#)
 
-Kolekcje słów:
+Twoje kolekcje słów:
 - pokazuje w tabeli wszystkie kolekcje słów utworzonych przez użytkownika,
 - użytkownik możne usunąć daną kolekcję – po kliknięciu przycisku Usuń przy danej kolekcji wyświetla się modal (pop-up) z pytaniem czy na pewno użytkownik chce usunąć daną kolekcję,
 - kliknięcie przycisku Edytuj przy danej kolekcji, przenosi użytkownika do widoku z fomrumlarzem edycji kolekcji (nie przenosi nas na nową stronę razor),
@@ -72,7 +73,8 @@ Technologies and solutions used:
 - running java script code from the C# code level,
 - Dependency Injection,
 - error handling by shared Error component,
-- Blazor.SessionStorage.WebAssembly library to use session storage.
+- Blazor.SessionStorage.WebAssembly library to use session storage,
+- localization; english and polish version available.
 
 
 Pages functionalities
@@ -89,30 +91,30 @@ All words:
 - a table with all the words in the word database divided into pages (10 words per page),
 - pagination - clicking the page number button sends a request to the Web API for words from a given page,
 - sorting on all columns in alphabetical and reverse order - clicking on the top of chosen column sends a request to the Web API for words from a given page in the selected order,
-- word editing function - after clicking the Edit ("Edytuj") button, user is taken to the editing page, where she/he can change the spelling of the word in Warmian and Polish and change what part of speech it is (parts of speech are selected using dropdown)
+- word editing function - after clicking the Edit button, user is taken to the editing page, where she/he can change the spelling of the word in Warmian and Polish and change what part of speech it is (parts of speech are selected using dropdown)
    - validation of fields content is implemented - max 16 characters, etc.; in the case of a validation error, the request to the API is not sent,
-   - clicking Back ("Wróć") button takes user to the page with all the words (reloading them),
-   - clicking Save ("Zapisz") button when the data was successfully validated sends a request to the Web API to edit the word and takes us to the page with all the words (reloading them);
-- after clicking the Delete ("Usuń") button, a modal pops up asking if user really wants to delete the word,
-- clicking the Create a new word ("Uwtórz nowe słowo") button - takes user to the page with the form in which she/he can complete the appropriate word fields (the same fields as when editing),
+   - clicking Back button takes user to the page with all the words (reloading them),
+   - clicking Save button when the data was successfully validated sends a request to the Web API to edit the word and takes us to the page with all the words (reloading them);
+- after clicking the Delete button, a modal pops up asking if user really wants to delete the word,
+- clicking the Create a new word button - takes user to the page with the form in which she/he can complete the appropriate word fields (the same fields as when editing),
    - validation of fields content is implemented - max 16 characters, etc.; in the case of a validation error, the request to the API is not sent,
-   - clicking Back ("Wróć) button takes user to the page with all the words (reloading them)
-   - clicking Save ("Zapisz") button when the data was successfully validated sends a request to create the word to the Web API and takes user to the page with all the words (reloading them)
+   - clicking Back button takes user to the page with all the words (reloading them)
+   - clicking Save button when the data was successfully validated sends a request to create the word to the Web API and takes user to the page with all the words (reloading them)
 - when the word edititng or creation is successful, a toast with suitable information is displayed (a short java script code running from the C# code level is used to display it)
 
-Word Collections:
+Your word collections:
 - shows in the table all collections of words that user created,
-- user can delete a chosen collection - after clicking the Delete ("Usuń") button next to the chosen collection, a modal (pop-up) is displayed asking if user really wants to delete the collection,
-- after clicking Edit ("Edytuj") button next to a chosen collection, it takes user to the view where she/he can edit the collection (it doesn't take user to a new razor page),
+- user can delete a chosen collection - after clicking the Delete button next to the chosen collection, a modal (pop-up) is displayed asking if user really wants to delete the collection,
+- after clicking Edit button next to a chosen collection, it takes user to the view where she/he can edit the collection (it doesn't take user to a new razor page),
 	- in this view user can delete words,
-   - add new ones - user can do it by searching for them in the database (using the same search component as on the home page), selecting the appropriate item from the table of found translations and clicking the Add ("Dodaj") button,
-   - clicking the Back ("Wróć") button changes the view to the word collection table,
-   - clicking Save ("Zapisz") when the data was successfully validated sends a request to edit the collection to the Web API,
-- after clicking the Create a new group ("Utwórz nową grupę") button, a modal (pop-up) shows up; modal uses the same component with the form as in the word collection editor,
+   - add new ones - user can do it by searching for them in the database (using the same search component as on the home page), selecting the appropriate item from the table of found translations and clicking the Add button,
+   - clicking the Back button changes the view to the word collection table,
+   - clicking Save when the data was successfully validated sends a request to edit the collection to the Web API,
+- after clicking the Create a new group button, a modal (pop-up) shows up; modal uses the same component with the form as in the word collection editor,
 	- in this window we can delete words,
-   - add new ones - user can do it by searching for them in the database (using the same search component as on the home page), selecting the appropriate item from the table of found translations and clicking the Add ("Dodaj") button,
-   - clicking the Close ("Zamknij") button closes the modal,
-   - clicking the Create ("Utwórz") button when the data was successfully validated sends a request to create the collection to the Web API,
+   - add new ones - user can do it by searching for them in the database (using the same search component as on the home page), selecting the appropriate item from the table of found translations and clicking the Add button,
+   - clicking the Close button closes the modal,
+   - clicking the Create button when the data was successfully validated sends a request to create the collection to the Web API,
 
 Users (only admin is authorized to see the content of this page):
 - shows all active users, i.e. users who have previously created a collection of words (only when creating a collection of words, user data is put into the database)

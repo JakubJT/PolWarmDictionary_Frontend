@@ -1,9 +1,30 @@
 .search-bar {
     max-width: 600px;
+    min-width: 500px;
     border: 1px solid rgb(87, 87, 87);
     box-shadow: 1px 1px 1px rgb(167, 167, 167);
     margin: 5px 0 5px;
     padding: 20px;
+}
+
+@media (width < 818px) {
+    .search-bar {
+        min-width: 200px;
+        max-width: 600px;
+    }
+
+    .wrapper {
+        margin-right: unset;
+    }
+
+    #readme {
+        word-wrap: normal;
+        overflow-wrap: anywhere;
+    }
+}
+
+h1 {
+    overflow-wrap: break-word;
 }
 
 .style-changer {
@@ -20,10 +41,47 @@
 .wrapper {
     display: flex;
     flex-direction: column;
+    margin-right: 30px;
 }
 
 .temporary {
     max-width: 600px;
     word-wrap: normal;
     overflow-wrap: anywhere;
+}
+
+#search-and-readme {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+#readme {
+    flex: 1.2;
+    margin-right: 30px;
+}
+
+.readme-title {
+    font-size: large;
+    font-weight: bold;
+}
+
+.readme-subtitle {
+    font-size: medium;
+    font-weight: bold;
+    margin-bottom: 8px;
+}
+
+.readme-functions {
+    font-weight: bolder;
+    margin-top: 30px;
+}
+
+.readme-paragraph {
+    padding-bottom: 20px;
+}
+
+ul {
+    list-style: square;
+    padding-left: 20px;
 }

@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AboutPageTitle" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="AllWordsInPolish" xml:space="preserve">
+    <value>In Polish</value>
+  </data>
+  <data name="AllWordsInWarmian" xml:space="preserve">
+    <value>In Warmian</value>
+  </data>
+  <data name="AllWordsPartOfSpeech" xml:space="preserve">
+    <value>Part of speech</value>
+  </data>
+  <data name="AllWordsEdit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="AllWordsDelete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="AllWordsPageTitle" xml:space="preserve">
+    <value>All words</value>
+  </data>
+  <data name="AllWordsHeading" xml:space="preserve">
+    <value>All words from dictionary</value>
+  </data>
+  <data name="AllWordsAddNewWord" xml:space="preserve">
+    <value>Add new word</value>
+  </data>
+  <data name="AllWordsToastContent" xml:space="preserve">
+    <value>Adding/editing of the word succeeded.</value>
+  </data>
+  <data name="AllWordsModalTitle" xml:space="preserve">
+    <value>Word deletion</value>
+  </data>
+  <data name="AllWordsModalContent" xml:space="preserve">
+    <value>Are you sure you want delete the word </value>
+  </data>
+  <data name="AllWordsGetWordsErrorNoContent" xml:space="preserve">
+    <value>No words in database</value>
+  </data>
+  <data name="AllWordsGetWordsErrorDefault" xml:space="preserve">
+    <value>Displaying words failed - </value>
+  </data>
+  <data name="AllWordsDeleteWordErrorNotFound" xml:space="preserve">
+    <value>Could not find the word "{0}" in the database</value>
+  </data>
+  <data name="AllWordsDeleteWordErrorDefault" xml:space="preserve">
+    <value>Deletion of the word failed - </value>
+  </data>
+  <data name="IndexPageTitle" xml:space="preserve">
+    <value>Polish-Warmian Dictionary - Main Page</value>
+  </data>
+  <data name="IndexDescription" xml:space="preserve">
+    <value>Polish-Warmian and Warmian-Polish Dictionary online</value>
+  </data>
+  <data name="IndexHeading" xml:space="preserve">
+    <value>Welcome to the Warmian-Polish/Polish-Warmian dictionary!</value>
+  </data>
+  <data name="IndexChangeStyleButton" xml:space="preserve">
+    <value>Change the style of the search bar</value>
+  </data>
+  <data name="IndexUserInfo1" xml:space="preserve">
+    <value>To gain access to page "All words" and "Your word collections" use login: 
+  </value>
+  </data>
+  <data name="IndexUserInfo2" xml:space="preserve">
+    <value> and password: </value>
+  </data>
+  <data name="IndexAdminInfo1" xml:space="preserve">
+    <value>To login as a administrator and gain additional access to the content of the page "Users" use login: </value>
+  </data>
+  <data name="IndexAdminInfo2" xml:space="preserve">
+    <value> and password: </value>
+  </data>
+  <data name="InterestingFactsPageTitle" xml:space="preserve">
+    <value>Interesting facts about Warmian subdialect</value>
+  </data>
+  <data name="InterestingFactsContent" xml:space="preserve">
+    <value>Some information about the subdialect</value>
+  </data>
+  <data name="UsersPageTitle" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="UsersHeading" xml:space="preserve">
+    <value>All active users of the dictionary</value>
+  </data>
+  <data name="UsersUserInfoTitle" xml:space="preserve">
+    <value>User</value>
+  </data>
+  <data name="UsersUserInfoName" xml:space="preserve">
+    <value>Name and surname</value>
+  </data>
+  <data name="UsersUserInfoNoEmail" xml:space="preserve">
+    <value>no data</value>
+  </data>
+  <data name="UsersUserInfoCollectionNumber" xml:space="preserve">
+    <value>Number of word collections</value>
+  </data>
+  <data name="UsersGetUsersErrorUnauthorized" xml:space="preserve">
+    <value>Only administrator can view active users.</value>
+  </data>
+  <data name="UsersGetUsersErrorNoContent" xml:space="preserve">
+    <value>There are no active users yet</value>
+  </data>
+  <data name="UsersGetUsersErrorDefault" xml:space="preserve">
+    <value>Getting users failed - </value>
+  </data>
+  <data name="WarmianTextsPageTitle" xml:space="preserve">
+    <value>Texts in Warmian</value>
+  </data>
+  <data name="WordGroupsPageTitle" xml:space="preserve">
+    <value>Your word collections</value>
+  </data>
+  <data name="WordGroupsHeading" xml:space="preserve">
+    <value>Your all word collections</value>
+  </data>
+  <data name="WordGroupsCreateModalTitle" xml:space="preserve">
+    <value>New colletion</value>
+  </data>
+  <data name="WordGroupsToastContent" xml:space="preserve">
+    <value>Creation/edit of the word collection succeeded.</value>
+  </data>
+    <data name="WordGroupsDeleteModalTitle" xml:space="preserve">
+    <value>Deletion of the word collection</value>
+  </data>
+    <data name="WordGroupsDeleteModalContent" xml:space="preserve">
+    <value>Are you sure you want to delete the collection </value>
+  </data>
+  <data name="WordGroupsCreateNew" xml:space="preserve">
+    <value>Create a new collection</value>
+  </data>
+  <data name="WordGroupsTableWordNumber" xml:space="preserve">
+    <value>Words number</value>
+  </data>
+  <data name="WordGroupsTableName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="WordGroupsGetWordGroupsErrorNoContent" xml:space="preserve">
+    <value>You haven't created any word collections yet.</value>
+  </data>
+  <data name="WordGroupsGetWordGroupsErrorDefault" xml:space="preserve">
+    <value>Getting word collections failed - </value>
+  </data>
+  <data name="WordGroupsDeleteWordGroupErrorNotFound" xml:space="preserve">
+    <value>Could not find the collection "{0}" in the database</value>
+  </data>
+  <data name="WordGroupsDeleteWordGroupErrorDefault" xml:space="preserve">
+    <value>Deletion of the collection failed - </value>
+  </data>
+  <data name="EditCreateWordFormInPolish" xml:space="preserve">
+    <value>In Polish</value>
+  </data>
+  <data name="EditCreateWordFormInWarmian" xml:space="preserve">
+    <value>In Warmian</value>
+  </data>
+  <data name="EditCreateWordFormPartOfSpeech" xml:space="preserve">
+    <value>Part of speech</value>
+  </data>
+  <data name="EditCreateWordFormChoosePartOfSpeech" xml:space="preserve">
+    <value>Choose a part of speech...</value>
+  </data>
+    <data name="EditCreateWordFormNoun" xml:space="preserve">
+    <value>Noun</value>
+  </data>
+    <data name="EditCreateWordFormVerb" xml:space="preserve">
+    <value>Verb</value>
+  </data>
+    <data name="EditCreateWordFormAdjective" xml:space="preserve">
+    <value>Adjective</value>
+  </data>
+    <data name="EditCreateWordFormAdverb" xml:space="preserve">
+    <value>Adverb</value>
+  </data>
+    <data name="EditCreateWordFormNumeral" xml:space="preserve">
+    <value>Numeral</value>
+  </data>
+    <data name="EditCreateWordFormPronoun" xml:space="preserve">
+    <value>Pronoun</value>
+  </data>
+    <data name="EditCreateWordFormOther" xml:space="preserve">
+    <value>Other</value>
+  </data>
+  <data name="EditCreateWordFormErrorWordNotFound" xml:space="preserve">
+    <value>Could not find the word in the database</value>
+  </data>
+  <data name="EditCreateWordFormGetErrorDefault" xml:space="preserve">
+    <value>Getting the word failed - </value>
+  </data>
+  <data name="EditCreateWordFormErrorWordConflict" xml:space="preserve">
+    <value> already exists in the databse</value>
+  </data>
+  <data name="EditCreateWordFormErrorCreateWordDefault" xml:space="preserve">
+    <value>Creation of the word failed - </value>
+  </data>
+  <data name="EditCreateWordFormErrorEditWordDefault" xml:space="preserve">
+    <value>Edit of the word failed - </value>
+  </data>
+  <data name="EditCreateWordGroupCollectionName" xml:space="preserve">
+    <value>Name of the collection:</value>
+  </data>
+  <data name="EditCreateWordGroupWords" xml:space="preserve">
+    <value>Words</value>
+  </data>
+  <data name="EditCreateWordGroupClose" xml:space="preserve">
+    <value>Close</value>
+  </data>
+  <data name="EditCreateWordGroupCreate" xml:space="preserve">
+    <value>Create</value>
+  </data>
+  <data name="EditCreateWordGroupBack" xml:space="preserve">
+    <value>Back</value>
+  </data>
+  <data name="EditCreateWordGroupErrorGroupNotFound" xml:space="preserve">
+    <value>Could not find the word collection in the database.</value>
+  </data>
+  <data name="EditCreateWordGroupErrorGroupConflict" xml:space="preserve">
+    <value>You already have a collection named </value>
+  </data>
+  <data name="EditCreateWordGroupErrorDefault" xml:space="preserve">
+    <value>Creation/edit of the word collection failed - </value>
+  </data>
+  <data name="EditCreateWordGroupErrorWordExists1" xml:space="preserve">
+    <value>The word </value>
+  </data>
+  <data name="EditCreateWordGroupErrorWordExists2" xml:space="preserve">
+    <value> is already in the collection.</value>
+  </data>
+  <data name="MainLayoutAbout" xml:space="preserve">
+    <value>About</value>
+  </data>
+  <data name="NavMenuTitle" xml:space="preserve">
+    <value>Polish-Warmian Dictionary</value>
+  </data>
+  <data name="NavMenuSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="NavMenuAllWords" xml:space="preserve">
+    <value>All words</value>
+  </data>
+  <data name="NavMenuYourWordCollections" xml:space="preserve">
+    <value>Your word collections</value>
+  </data>
+  <data name="NavMenuUsers" xml:space="preserve">
+    <value>Users</value>
+  </data>
+  <data name="NavMenuInterestingFacts" xml:space="preserve">
+    <value>Interesting facts</value>
+  </data>
+  <data name="NavMenuWarmianTexts" xml:space="preserve">
+    <value>Texts in Warmian</value>
+  </data>
+  <data name="LoginDisplayGreeting" xml:space="preserve">
+    <value>Hello </value>
+  </data>
+  <data name="LoginDisplayLogin" xml:space="preserve">
+    <value>Log out</value>
+  </data>
+  <data name="LoginDisplayLogout" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="SearchChangeLanguage" xml:space="preserve">
+    <value>Change language</value>
+  </data>
+  <data name="SearchPolish" xml:space="preserve">
+    <value>Polish</value>
+  </data>
+  <data name="SearchWarmian" xml:space="preserve">
+    <value>Warmian</value>
+  </data>
+  <data name="SearchSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="SearchPartOfSpeech" xml:space="preserve">
+    <value>Part of speech</value>
+  </data>
+  <data name="SearchAdd" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="SearchErrorNoContent" xml:space="preserve">
+    <value>Could not fint the word "{0}" in the database</value>
+  </data>
+  <data name="SearchErrorDefault" xml:space="preserve">
+    <value>Searching for the word failed - </value>
+  </data>
+  <data name="ErrorDefaultError" xml:space="preserve">
+    <value>Something went wrong: </value>
+  </data>
+  <data name="Yes" xml:space="preserve">
+    <value>Yes</value>
+  </data>
+  <data name="No" xml:space="preserve">
+    <value>No</value>
+  </data>
+  <data name="Loading" xml:space="preserve">
+    <value>Loading...</value>
+  </data>
+    <data name="Edit" xml:space="preserve">
+    <value>Edit</value>
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value>Delete</value>
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value>Save</value>
+  </data>
+</root>

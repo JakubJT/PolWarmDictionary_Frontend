@@ -24,8 +24,9 @@ main {
 .top-row ::deep a,
 .top-row ::deep .btn-link {
     white-space: nowrap;
-    margin-left: 1.5rem;
+    margin-left: 1rem;
     text-decoration: none;
+    line-height: 1;
 }
 
 .top-row ::deep a:hover,
@@ -36,6 +37,10 @@ main {
 .top-row ::deep a:first-child {
     overflow: hidden;
     text-overflow: ellipsis;
+}
+
+div ::deep .rz-selectbutton {
+    margin-left: 14px;
 }
 
 @media (max-width: 640.98px) {

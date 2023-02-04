@@ -11,11 +11,12 @@
 @inject Endpoint Endpoint
 @inject Sorting Sorting
 @inject RequestMessageGenerator RequestMessageGenerator
+@inject IStringLocalizer<Localization.Localization> Loc
 
 
-<PageTitle>Użytkownicy</PageTitle>
+<PageTitle>@Loc["UsersPageTitle"]</PageTitle>
 
-<h1>Wszyscy aktywni użytkownicy słownika</h1>
+<h1>@Loc["UsersHeading"]</h1>
 <div>
     @if (users == null)
     {
@@ -25,7 +26,7 @@
         }
         else
         {
-            <p><em>Wczytywanie...</em></p>
+            <p><em>@Loc["Loading"]</em></p>
             <div class="spinner-border text-primary" role="status">
                 <span class="visually-hidden">Loading...</span>
             </div>
@@ -37,14 +38,14 @@
             @foreach (var user in users)
             {
                 <RadzenCard class="m-3 rz-shadow-5">
-                    <h3 class="h5">Użytkownik</h3>
+                    <h3 class="h5">@Loc["UsersUserInfoTitle"]</h3>
                     <div class="d-flex flex-row">
                         <div>
-                            <div>Imię i nazwisko</div>
+                            <div>@Loc["UsersUserInfoName"]</div>
                             <b>@user.Name</b>
                             <div>E-mail</div>
-                            <b>@(user.Email == null ? "brak" : user.Email)</b>
-                            <div class="mt-3">Ilość kolekcji słów</div>
+                            <b>@(user.Email == null ? Loc["UsersUserInfoNoEmail"] : user.Email)</b>
+                            <div class="mt-3">@Loc["UsersUserInfoCollectionNumber"]</div>
                             <b>@user.NumberOfWordGroups</b>
                         </div>
                     </div>
@@ -84,7 +85,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                        Tylko administrator ma możliwość przeglądać aktywnych użytkowników.
+                        @Loc["UsersGetUsersErrorUnauthorized"]
                     </div>
                 };
                 return;
@@ -94,7 +95,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-secondary" role="alert">
-                        Nie ma jeszcze żadnych aktywnych użytkowników
+                        @Loc["UsersGetUsersErrorNoContent"]
                     </div>
                 };
                 return;
@@ -104,7 +105,7 @@
                 ErrorHandleMessage = __builder =>
                 {
                     <div class="alert alert-warning" role="alert">
-                        Pobranie użytkowników się nie powiodło - <em>{getResponse.StatusCode}</em>
+                        @Loc["UsersGetUsersErrorDefault"]<em>@getResponse.StatusCode</em>
                     </div>
                 };
                 return;

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.AspNetCore.Components.WebAssembly.Authentication;
+using System.Globalization;
+using Microsoft.JSInterop;
 using PolWarmDictionary_Frontend;
 using MudBlazor.Services;
 
@@ -20,7 +22,7 @@ builder.Services.AddMsalAuthentication(options =>
     options.ProviderOptions.DefaultAccessTokenScopes.Add("api://6f1e33fd-dcb9-4da6-a7f2-34dd964950f4/API.Access");
 });
 
-
+builder.Services.AddLocalization();
 builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri(builder.HostEnvironment.BaseAddress) });
 builder.Services.AddSingleton<Endpoint>();
 builder.Services.AddTransient<Sorting>();
@@ -28,4 +30,26 @@ builder.Services.AddTransient<RequestMessageGenerator>();
 builder.Services.AddMudServices();
 builder.Services.AddSessionStorageServices();
 
-await builder.Build().RunAsync();
+var host = builder.Build();
+
+var js = host.Services.GetRequiredService<IJSRuntime>();
+var module = await js.InvokeAsync<IJSObjectReference>("import",
+            "./Shared/MainLayout.razor.js");
+string savedCulture = await module.InvokeAsync<string>("getCulture", "en");
+
+CultureInfo cultureInfo;
+if (savedCulture == null)
+{
+    cultureInfo = new CultureInfo("en");
+    await module.InvokeVoidAsync("setCulture", "en");
+}
+else
+{
+    cultureInfo = new CultureInfo(savedCulture);
+}
+if (module is not null) await module.DisposeAsync();
+
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+await host.RunAsync();
