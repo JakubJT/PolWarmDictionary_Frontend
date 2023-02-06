@@ -11,11 +11,11 @@
         <button type="button" class="btn btn-primary" @onclick="ChangeLanguage">@Loc["SearchChangeLanguage"]</button>
         @if (PolishToWarmianTranslation)
         {
-            <span>@Loc["SearchPolish"]<span class="oi oi-arrow-right" aria-hidden="true"></span>@Loc["SearchWarmian"]</span>
+            <span>@Loc["SearchPolish"] <span class="oi oi-arrow-right" aria-hidden="true"></span> @Loc["SearchWarmian"]</span>
         }
         else
         {
-            <span>@Loc["SearchWarmian"]<span class="oi oi-arrow-right" aria-hidden="true"></span>@Loc["SearchPolish"]</span>
+            <span>@Loc["SearchWarmian"] <span class="oi oi-arrow-right" aria-hidden="true"></span> @Loc["SearchPolish"]</span>
         }
     </p>
 </div>
@@ -137,13 +137,8 @@
         TextValue = SessionStorageServices.GetItem<string?>("word");
         if (SessionStorageServices.GetItem<List<Word>?>("result") == null)
         {
-            ErrorHandleMessage = __builder =>
-            {
-                <div class="alert alert-secondary" role="alert">
-                    @(String.Format(@Loc["SearchErrorNoContent"], @TextValue))
-                </div>
-
-            };
+            ErrorHandleMessage = Error?
+                                .HandleError(errorMessage:String.Format(Loc["SearchErrorNoContent"], TextValue), alertType: "secondary");
         }
         else
         {
@@ -162,13 +157,8 @@
             var response = await Http.GetAsync(Endpoint.Url + request);
             if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-secondary" role="alert">
-                      @(String.Format(@Loc["SearchErrorNoContent"], @TextValue))
-                    </div>
-
-                };
+                ErrorHandleMessage = Error?
+                                    .HandleError(errorMessage:String.Format(Loc["SearchErrorNoContent"], TextValue), alertType: "secondary");
 
                 if (EditGroupMode) return;
                 SessionStorageServices.SetItem("result", Result);
@@ -177,17 +167,15 @@
             }
             else if (!response.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        @Loc["SearchErrorDefault"]<em>@response.StatusCode</em>
-                    </div>
-
-                };
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["SearchErrorDefault"] + response.StatusCode);            
                 return;
             }
 
             var reponseData = await response.Content.ReadFromJsonAsync<List<Word>>();
+            foreach (var word in reponseData!)
+            {
+                word.PartOfSpeech = ConvertPartOfSpeechIdToPartOfSpeech(word.PartOfSpeechId);
+            }
             Result = reponseData;
 
             if (EditGroupMode) return;
@@ -197,6 +185,21 @@
         catch (Exception ex)
         {
             ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+
+        private string? ConvertPartOfSpeechIdToPartOfSpeech(int? partOfSpeechId)
+    {
+        switch (partOfSpeechId)
+        {
+            case 1: return Loc["EditCreateWordFormNoun"];
+            case 2: return Loc["EditCreateWordFormVerb"];
+            case 4: return Loc["EditCreateWordFormAdjective"];
+            case 5: return Loc["EditCreateWordFormAdverb"];
+            case 3: return Loc["EditCreateWordFormNumeral"];
+            case 6: return Loc["EditCreateWordFormPronoun"];
+            case 7: return Loc["EditCreateWordFormOther"];
+            default: return default;
         }
     }
 }

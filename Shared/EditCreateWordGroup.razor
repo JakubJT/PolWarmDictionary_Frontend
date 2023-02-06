@@ -96,33 +96,20 @@
 
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        <p>@Loc["EditCreateWordGroupErrorGroupNotFound"]</p>
-                    </div>
-                };
-                Logger.LogError("Create/EditWordGroup request returned status code: " + response.StatusCode.ToString());
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["EditCreateWordGroupErrorGroupNotFound"],
+                logText: "Create/EditWordGroup request returned status code: " + response.StatusCode.ToString());
                 return;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-secondary" role="alert">
-                        <p>@Loc["EditCreateWordGroupErrorGroupConflict"]<em>@WordGroup!.Name</em></p>
-                    </div>
-                };
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["EditCreateWordGroupErrorGroupConflict"] +
+                $"\"{WordGroup!.Name}\"",
+                alertType: "secondary");
                 return;
             }
             else if (!response.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        <p>@Loc["EditCreateWordGroupErrorDefault"]<em>@response.StatusCode</em></p>
-                    </div>
-                };
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["EditCreateWordGroupErrorDefault"] + response.StatusCode);
                 return;
             }
             SessionStorageServices.SetItem("actionSucceeded", true);
@@ -144,13 +131,9 @@
 
         if (WordGroup!.Words!.Exists(w => w.Id == word.Id))
         {
-            ErrorHandleMessage = __builder =>
-            {
-                <div class="alert alert-warning" role="alert">
-                    <p>@Loc["EditCreateWordGroupErrorWordExists1"]<em>@word.InPolish/@word.InWarmian/@word.PartOfSpeech</em>
-                        @Loc["EditCreateWordGroupErrorWordExists2"]</p>
-                </div>
-            };
+            string errorMessage =
+            $"{Loc["EditCreateWordGroupErrorWordExists1"]}\"{word.InPolish}/{word.InWarmian}/{word.PartOfSpeech}\"{Loc["EditCreateWordGroupErrorWordExists2"]}";
+            ErrorHandleMessage = Error?.HandleError(errorMessage: errorMessage);
         }
         else WordGroup!.Words!.Add(word);
     }

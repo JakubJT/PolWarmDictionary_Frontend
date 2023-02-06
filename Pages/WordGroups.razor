@@ -211,12 +211,8 @@ else
             }
             else if (!getResponse.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        @Loc["WordGroupsGetWordGroupsErrorDefault"]<em>@getResponse.StatusCode</em>
-                    </div>
-                };
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["WordGroupsGetWordGroupsErrorDefault"] +
+                getResponse.StatusCode);
                 return;
             }
 
@@ -242,23 +238,15 @@ else
             var deleteResponse = await Http.SendAsync(requestMessage);
             if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        @(String.Format(@Loc["WordGroupsDeleteWordGroupErrorNotFound"], @wordGroupToDelete.Name))
-                    </div>
-                };
-                Logger.LogError("DeleteWordGroup request returned status code: " + deleteResponse.StatusCode.ToString());
+                ErrorHandleMessage = Error?.HandleError(errorMessage: String.Format(@Loc["WordGroupsDeleteWordGroupErrorNotFound"],
+                @wordGroupToDelete.Name),
+                logText: "DeleteWordGroup request returned status code: " + deleteResponse.StatusCode.ToString());
                 return;
             }
             else if (!deleteResponse.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        @Loc["WordGroupsDeleteWordGroupErrorDefault"]<em>{response.StatusCode}</em>
-                    </div>
-                };
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["WordGroupsDeleteWordGroupErrorDefault"] +
+                deleteResponse.StatusCode);
                 return;
             }
             await GetWordGroups();

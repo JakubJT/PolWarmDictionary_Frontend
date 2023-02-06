@@ -1,15 +1,13 @@
 .display-elements {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
 }
 
 .greeting {
     margin-left: 14px;
 }
 
-.btn {
-    font-size: unset;
-    padding: unset;
-    line-height: unset;
-    border: unset;
+div ::deep button {
+    margin-left: 14px;
 }

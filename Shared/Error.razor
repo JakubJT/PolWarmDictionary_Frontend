@@ -9,19 +9,26 @@
 @code {
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
-    private string? ErrorMessage { get; set; }
-    public RenderFragment HandleError(Exception ex)
-    {
-        ErrorMessage = Loc["ErrorDefaultError"];
 
-        Logger.LogError(ex, "Error");
-        ChildContent = __builder =>
+    public RenderFragment HandleError(Exception? ex = null, string? errorMessage = null, string? logText = "", string
+    alertType = "warning")
+    {
+        if (ex is not null)
         {
-            <div class="alert alert-danger" role="alert">
-                <p>@ErrorMessage @ex.GetType()</p>
+            errorMessage = Loc["ErrorDefaultError"] + " " + ex.GetType();
+            Logger.LogError(ex, "Error");
+            alertType = "danger";
+        }
+
+        if (logText != String.Empty) Logger.LogError(logText);
+
+        RenderFragment errorRenderFragment = __builder =>
+        {
+            <div class="alert alert-@alertType" role="alert">
+                <p>@errorMessage</p>
             </div>
 
         };
-        return ChildContent;
+        return errorRenderFragment;
     }
 }

@@ -8,19 +8,26 @@
     <Authorized>
         <div class="display-elements">
             <div class="greeting">@Loc["LoginDisplayGreeting"]@context.User.Identity?.Name!</div>
-            <button class="nav-link btn btn-link" @onclick="BeginLogout">@Loc["LoginDisplayLogin"]</button>
+            <RadzenButton type="button" Click="BeginLogout" Size="ButtonSize.ExtraSmall"
+                ButtonStyle="ButtonStyle.Secondary">@Loc["LoginDisplayLogin"]
+            </RadzenButton>
         </div>
     </Authorized>
     <NotAuthorized>
-        <a href="authentication/login">@Loc["LoginDisplayLogout"]</a>
+        <RadzenButton type="button" Click="Login" Size="ButtonSize.ExtraSmall" ButtonStyle="ButtonStyle.Secondary">
+            @Loc["LoginDisplayLogout"]</RadzenButton>
     </NotAuthorized>
 
 </AuthorizeView>
 
 @code {
-    private async Task BeginLogout(MouseEventArgs args)
+    private async Task BeginLogout()
     {
         await SignOutManager.SetSignOutState();
         Navigation.NavigateTo("authentication/logout");
+    }
+    private void Login()
+    {
+        Navigation.NavigateTo("authentication/login");
     }
 }

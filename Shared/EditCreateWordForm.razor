@@ -72,23 +72,13 @@
             var response = await Http.GetAsync(Endpoint.Url + request);
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        <p>@Loc["EditCreateWordFormErrorWordNotFound"]</p>
-                    </div>
-                };
-                Logger.LogError("GetWordById request returned status code: " + response.StatusCode.ToString());
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["EditCreateWordFormErrorWordNotFound"],
+                logText: "GetWordById request returned status code: " + response.StatusCode.ToString());
                 return;
             }
             else if (!response.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        <p>@Loc["EditCreateWordFormGetErrorDefault"]<em>@response.StatusCode</em> </p>
-                    </div>
-                };
+                ErrorHandleMessage = Error?.HandleError(errorMessage: @Loc["EditCreateWordFormGetErrorDefault"] + response.StatusCode);
                 return;
             }
             WordToSubmit = await response.Content.ReadFromJsonAsync<Word>();
@@ -112,43 +102,34 @@
 
             if (response.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        <p>@Loc["EditCreateWordFormErrorWordNotFound"]</p>
-                    </div>
-                };
-                Logger.LogError("EditWord request returned status code: " + response.StatusCode.ToString());
+                ErrorHandleMessage = Error?.HandleError(errorMessage: @Loc["EditCreateWordFormErrorWordNotFound"],
+                logText: "EditWord request returned status code: " + response.StatusCode.ToString());
                 return;
             }
             else if (response.StatusCode == System.Net.HttpStatusCode.Conflict)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-secondary" role="alert">
-                        <p><em>@WordToSubmit!.InPolish/@WordToSubmit.InWarmian/@WordToSubmit.PartOfSpeech</em>@Loc["EditCreateWordFormErrorWordConflict"]
-                        </p>
-                    </div>
-                };
+                string? partOfSpeech = ConvertPartOfSpeechIdToPartOfSpeech(WordToSubmit?.PartOfSpeechId);
+                ErrorHandleMessage = Error?.HandleError(errorMessage:
+                $"\"{WordToSubmit!.InPolish}/{WordToSubmit.InWarmian}/{partOfSpeech}\" {Loc["EditCreateWordFormErrorWordConflict"]}");
                 return;
             }
             else if (!response.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
+                string errorMessage;
+                string logText;
+                if (WordId == null)
                 {
-                    <div class="alert alert-warning" role="alert">
-                        @if (WordId == null)
-                        {
-                            <p>@Loc["EditCreateWordFormErrorCreateWordDefault"]<em>@response.StatusCode</em></p>
-                        }
-                        else
-                        {
-                            <p>@Loc["EditCreateWordFormErrorEditWordDefault"]<em>@response.StatusCode</em></p>
-                        }
-                    </div>
-                };
-                Logger.LogError(WordId == null ? "CreateWord" : "EditWord" + " request returned status code: " +
-                response.StatusCode.ToString());
+                    errorMessage = Loc["EditCreateWordFormErrorCreateWordDefault"] + response.StatusCode;
+                    logText = "CreateWord";
+                }
+                else
+                {
+                    errorMessage = Loc["EditCreateWordFormErrorEditWordDefault"] + response.StatusCode;
+                    logText = "EditWord";
+                }
+
+                ErrorHandleMessage = Error?.HandleError(errorMessage: errorMessage,
+                logText: logText + " request returned status code: " + response.StatusCode.ToString());
                 return;
             }
             SessionStorageServices.SetItem("actionSucceeded", true);
@@ -157,6 +138,21 @@
         catch (Exception ex)
         {
             ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+
+    private string? ConvertPartOfSpeechIdToPartOfSpeech(int? partOfSpeechId)
+    {
+        switch (partOfSpeechId)
+        {
+            case 1: return Loc["EditCreateWordFormNoun"];
+            case 2: return Loc["EditCreateWordFormVerb"];
+            case 4: return Loc["EditCreateWordFormAdjective"];
+            case 5: return Loc["EditCreateWordFormAdverb"];
+            case 3: return Loc["EditCreateWordFormNumeral"];
+            case 6: return Loc["EditCreateWordFormPronoun"];
+            case 7: return Loc["EditCreateWordFormOther"];
+            default: return default;
         }
     }
 }

@@ -174,17 +174,16 @@
             }
             else if (!response.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        @Loc["AllWordsGetWordsErrorDefault"]<em>@response.StatusCode</em>
-                    </div>
-                };
+                ErrorHandleMessage = Error?.HandleError(errorMessage: Loc["AllWordsGetWordsErrorDefault"]+response.StatusCode);
                 return;
             }
             var result = await response.Content.ReadFromJsonAsync<Words>();
             numberOfPages = result!.NumberOfPages;
             words = result.WordList!.ToArray();
+            foreach (var word in words)
+            {
+                word.PartOfSpeech = ConvertPartOfSpeechIdToPartOfSpeech(word.PartOfSpeechId);
+            }
             paginationComponent?.Paginate();
     }
     private async Task GetWords((string SortBy, bool AscendingOrder, int pageNumber) options)
@@ -210,23 +209,13 @@
             var deleteResponse = await Http.SendAsync(requestMessage);
             if (deleteResponse.StatusCode == System.Net.HttpStatusCode.NotFound)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        @(String.Format(@Loc["AllWordsDeleteWordErrorNotFound"], @wordToDelete.InPolish))
-                    </div>
-                };
-                Logger.LogError("DeleteWord request returned status code: " + deleteResponse.StatusCode.ToString());
+                ErrorHandleMessage = Error?.HandleError(errorMessage: String.Format(@Loc["AllWordsDeleteWordErrorNotFound"], @wordToDelete.InPolish), 
+                                                        logText: "DeleteWord request returned status code: " + deleteResponse.StatusCode.ToString());
                 return;  
             }
             else if (!deleteResponse.IsSuccessStatusCode)
             {
-                ErrorHandleMessage = __builder =>
-                {
-                    <div class="alert alert-warning" role="alert">
-                        @Loc["AllWordsDeleteWordErrorDefault"]<em>{response.StatusCode}</em>
-                    </div>
-                };
+                ErrorHandleMessage= Error?.HandleError(errorMessage: Loc["AllWordsDeleteWordErrorDefault"] + deleteResponse.StatusCode);
                 return;
             }
             await GetWords("InPolish", true);
@@ -234,6 +223,20 @@
         catch(Exception ex)
         {
             ErrorHandleMessage = Error?.HandleError(ex);
+        }
+    }
+        private string? ConvertPartOfSpeechIdToPartOfSpeech(int? partOfSpeechId)
+    {
+        switch (partOfSpeechId)
+        {
+            case 1: return Loc["EditCreateWordFormNoun"];
+            case 2: return Loc["EditCreateWordFormVerb"];
+            case 4: return Loc["EditCreateWordFormAdjective"];
+            case 5: return Loc["EditCreateWordFormAdverb"];
+            case 3: return Loc["EditCreateWordFormNumeral"];
+            case 6: return Loc["EditCreateWordFormPronoun"];
+            case 7: return Loc["EditCreateWordFormOther"];
+            default: return default;
         }
     }
 }

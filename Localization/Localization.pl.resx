@@ -246,7 +246,7 @@
     <value>Pobranie słowa się nie powiodło - </value>
   </data>
     <data name="EditCreateWordFormErrorWordConflict" xml:space="preserve">
-    <value> istnieje już bazie danych</value>
+    <value> istnieje już w bazie danych</value>
   </data>
     <data name="EditCreateWordFormErrorCreateWordDefault" xml:space="preserve">
     <value>Utworzenie słowa się nie powiodło - </value>
