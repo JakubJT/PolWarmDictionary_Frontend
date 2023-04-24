@@ -91,11 +91,20 @@
     public async Task OnSubmit()
     {
         string requestUri;
-        if (WordId == null) requestUri = Endpoint.Url + $"/word/createword";
-        else requestUri = Endpoint.Url + $"/word/editword";
+        HttpMethod httpMethod;
+        if (WordId == null)
+        {
+            requestUri = Endpoint.Url + $"/word/createword";
+            httpMethod = HttpMethod.Post;
+        }
+        else
+        {
+            requestUri = Endpoint.Url + $"/word/editword";
+            httpMethod = HttpMethod.Put;
+        }
         try
         {
-            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Post, requestUri);
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(httpMethod, requestUri);
             string jsonPostRequest = JsonSerializer.Serialize(WordToSubmit);
             requestMessage.Content = new StringContent(jsonPostRequest, Encoding.UTF8, "application/json");
             var response = await Http.SendAsync(requestMessage);

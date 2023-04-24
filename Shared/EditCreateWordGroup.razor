@@ -84,12 +84,22 @@
     public async Task OnSubmit()
     {
         string requestUri;
-        if (CreateForm) requestUri = Endpoint.Url + $"/wordgroup/createwordgroup";
-        else requestUri = Endpoint.Url + $"/wordgroup/editwordgroup";
+        HttpMethod httpMethod;
+        if (CreateForm)
+        {
+            requestUri = Endpoint.Url + $"/wordgroup/createwordgroup";
+            httpMethod = HttpMethod.Post;
+        }
+
+        else
+        {
+            requestUri = Endpoint.Url + $"/wordgroup/editwordgroup";
+            httpMethod = HttpMethod.Put;
+        }
 
         try
         {
-            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(HttpMethod.Post, requestUri);
+            var requestMessage = await RequestMessageGenerator.GetHttpRequestMessage(httpMethod, requestUri);
             string jsonPostRequest = JsonSerializer.Serialize(WordGroup);
             requestMessage.Content = new StringContent(jsonPostRequest, Encoding.UTF8, "application/json");
             var response = await Http.SendAsync(requestMessage);
